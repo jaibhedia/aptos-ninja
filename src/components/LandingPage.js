@@ -2,10 +2,15 @@ import React from 'react';
 import AptosWallet from './AptosWallet';
 import './LandingPage.css';
 
-const LandingPage = ({ onStartGame, aptos }) => {
+const LandingPage = ({ onStartGame, onMultiplayer, aptos }) => {
   const handlePlayClick = (e) => {
     e.preventDefault();
     onStartGame();
+  };
+
+  const handleMultiplayerClick = (e) => {
+    e.preventDefault();
+    onMultiplayer();
   };
 
   const handleVideoError = (e) => {
@@ -71,6 +76,10 @@ const LandingPage = ({ onStartGame, aptos }) => {
             <button className="hero-play-button" onClick={handlePlayClick}>
               <span className="play-icon">▶</span>
               Play Now
+            </button>
+            <button className="hero-multiplayer-button" onClick={handleMultiplayerClick}>
+              <span className="multiplayer-icon">⚔️</span>
+              Multiplayer Arena
             </button>
           </div>
         </div>

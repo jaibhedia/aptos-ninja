@@ -1,9 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import multiplayerService from '../services/multiplayerService';
 
-const ResultsScreen = ({ gameState, onStartGame, onShowStartScreen, aptos }) => {
+const ResultsScreen = ({ gameState, onStartGame, onShowStartScreen, aptos, multiplayerGameId, onBackToMultiplayer }) => {
   const isNewBest = gameState.score > gameState.bestScore;
   const [mintingStatus, setMintingStatus] = useState(null); // null, 'minting', 'success', 'error'
   const [transactionHash, setTransactionHash] = useState(null);
+  const [multiplayerSubmitted, setMultiplayerSubmitted] = useState(false);
+
+  // Submit multiplayer score when game ends
+  useEffect(() => {
+    const submitMultiplayerScore = async () => {
+      if (multiplayerGameId && aptos.isConnected && !multiplayerSubmitted) {
+        setMultiplayerSubmitted(true);
+        console.log('🎮 Submitting multiplayer score:', gameState.score);
+        
+        const result = await multiplayerService.submitScore(multiplayerGameId, gameState.score);
+        
+        if (result.success) {
+          console.log('✅ Multiplayer score submitted successfully');
+        } else {
+          console.error('❌ Failed to submit multiplayer score:', result.error);
+        }
+      }
+    };
+
+    submitMultiplayerScore();
+  }, [multiplayerGameId, gameState.score, aptos.isConnected, multiplayerSubmitted]);
 
   return (
     <div className="screen results-screen">
@@ -143,18 +165,37 @@ const ResultsScreen = ({ gameState, onStartGame, onShowStartScreen, aptos }) => 
 
         {/* Navigation Buttons */}
         <div className="button-row">
-          <button 
-            className="game-button play-again" 
-            onClick={onStartGame}
-          >
-            🔄 Replay
-          </button>
-          <button 
-            className="game-button back-home" 
-            onClick={onShowStartScreen}
-          >
-            Home
-          </button>
+          {multiplayerGameId ? (
+            <>
+              <button 
+                className="game-button back-multiplayer" 
+                onClick={onBackToMultiplayer}
+              >
+                ⚔️ Back to Arena
+              </button>
+              <button 
+                className="game-button back-home" 
+                onClick={onShowStartScreen}
+              >
+                🏠 Home
+              </button>
+            </>
+          ) : (
+            <>
+              <button 
+                className="game-button play-again" 
+                onClick={onStartGame}
+              >
+                🔄 Replay
+              </button>
+              <button 
+                className="game-button back-home" 
+                onClick={onShowStartScreen}
+              >
+                Home
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>

@@ -397,7 +397,7 @@
   box-shadow: 0 0 30px rgba(46, 216, 167, 0.4),
               0 10px 30px rgba(0, 0, 0, 0.3);
   position: absolute;
-  bottom: 0.5rem;
+  bottom: 6rem;
   left: 50%;
   transform: translateX(-50%);
   overflow: hidden;
@@ -435,6 +435,65 @@
   transform: translateX(5px);
 }
 
+/* Multiplayer Button */
+.hero-multiplayer-button {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  padding: 1.2rem 4rem;
+  background: linear-gradient(135deg, #ff6b35, #f7931e);
+  border: 2px solid rgba(255, 107, 53, 0.5);
+  border-radius: 50px;
+  color: #ffffff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 25px rgba(255, 107, 53, 0.4),
+              0 8px 25px rgba(0, 0, 0, 0.3);
+  position: absolute;
+  bottom: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  overflow: hidden;
+}
+
+.hero-multiplayer-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.hero-multiplayer-button:hover::before {
+  left: 100%;
+}
+
+.hero-multiplayer-button:hover {
+  transform: translateX(-50%) translateY(-3px) scale(1.05);
+  box-shadow: 0 0 35px rgba(255, 107, 53, 0.6),
+              0 12px 35px rgba(0, 0, 0, 0.4);
+  border-color: rgba(255, 107, 53, 0.8);
+}
+
+.multiplayer-icon {
+  font-size: 1.3rem;
+  display: flex;
+  align-items: center;
+  transition: transform 0.3s ease;
+}
+
+.hero-multiplayer-button:hover .multiplayer-icon {
+  transform: rotate(15deg) scale(1.1);
+}
+
 /* Responsive Hero Section */
 @media (max-width: 1200px) {
   .hero-game-title {
@@ -462,6 +521,12 @@
   .hero-play-button {
     font-size: 1.2rem;
     padding: 1rem 3rem;
+    bottom: 7rem;
+  }
+
+  .hero-multiplayer-button {
+    font-size: 1.1rem;
+    padding: 1rem 2.5rem;
   }
 }
 
@@ -477,6 +542,32 @@
   .hero-play-button {
     font-size: 1rem;
     padding: 0.8rem 2rem;
+    bottom: 6.5rem;
+    width: calc(100% - 2rem);
+    left: 1rem;
+    transform: none;
+  }
+
+  .hero-play-button:hover {
+    transform: translateY(-3px) scale(1.05);
+  }
+
+  .hero-multiplayer-button {
+    font-size: 0.9rem;
+    padding: 0.8rem 1.5rem;
+    bottom: 1rem;
+    width: calc(100% - 2rem);
+    left: 1rem;
+    transform: none;
+  }
+
+  .hero-multiplayer-button:hover {
+    transform: translateY(-3px) scale(1.05);
+  }
+
+  .play-icon,
+  .multiplayer-icon {
+    font-size: 1rem;
   }
 }
 

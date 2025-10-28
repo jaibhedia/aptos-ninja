@@ -10,6 +10,7 @@ import { useAptos } from './hooks/useAptos';
 import './App.css';
 import { SpeedInsights } from "@vercel/speed-insights/react"
 import { Analytics } from "@vercel/analytics/react"
+import MultiplayerLobby from './components/MultiplayerLobby';
 
 function App() {
   const {
@@ -28,6 +29,8 @@ function App() {
   const aptos = useAptos();
   const [particles, setParticles] = useState([]);
   const [showLanding, setShowLanding] = useState(true);
+  const [showMultiplayer, setShowMultiplayer] = useState(false);
+  const [multiplayerGameId, setMultiplayerGameId] = useState(null);
 
   // Add taskbar controls
   useTaskbarControls(gameState, togglePause);
@@ -96,6 +99,7 @@ function App() {
             updateParticles={updateParticles}
             onBackToHome={handleBackToLanding}
             aptos={aptos}
+            multiplayerGameId={multiplayerGameId}
           />
         );
       case 'results':
@@ -105,6 +109,8 @@ function App() {
             onStartGame={startGame}
             onShowStartScreen={handleBackToLanding}
             aptos={aptos}
+            multiplayerGameId={multiplayerGameId}
+            onBackToMultiplayer={handleBackToMultiplayerLobby}
           />
         );
       default:
@@ -124,7 +130,45 @@ function App() {
   const handleBackToLanding = () => {
     showStartScreen(); // Reset game state to start screen
     setShowLanding(true);
+    setShowMultiplayer(false);
+    setMultiplayerGameId(null);
   };
+
+  const handleShowMultiplayer = () => {
+    if (!aptos.isConnected) {
+      alert('Please connect your wallet to play multiplayer games!');
+      return;
+    }
+    setShowLanding(false);
+    setShowMultiplayer(true);
+  };
+
+  const handleStartMultiplayerGame = (gameId) => {
+    setMultiplayerGameId(gameId);
+    setShowMultiplayer(false);
+    startGame();
+  };
+
+  const handleBackToMultiplayerLobby = () => {
+    showStartScreen();
+    setShowMultiplayer(true);
+  };
+
+  if (showMultiplayer) {
+    return (
+      <div className="App">
+        <div className="beta-tag">
+          <span className="beta-text">BETA v0.1</span>
+        </div>
+        
+        <MultiplayerLobby 
+          walletAddress={aptos.walletAddress}
+          onStartGame={handleStartMultiplayerGame}
+          onBack={handleBackToLanding}
+        />
+      </div>
+    );
+  }
 
   if (showLanding) {
     return (
@@ -136,6 +180,7 @@ function App() {
         
         <LandingPage 
           onStartGame={handleStartFromLanding}
+          onMultiplayer={handleShowMultiplayer}
           aptos={aptos}
         />
       </div>
