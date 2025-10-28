@@ -1469,3 +1469,107 @@
   }
 }
 
+/* Critical Mobile Fixes - Prevent scrolling and shaking */
+@media (max-width: 768px) {
+  .landing-page {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  .landing-page::before {
+    position: fixed;
+    will-change: transform;
+  }
+
+  /* Fix buttons being too small/unresponsive */
+  .hero-play-button,
+  .hero-multiplayer-button,
+  .cta-button,
+  button {
+    min-height: 50px;
+    min-width: 120px;
+    font-size: 16px !important;
+    padding: 14px 28px !important;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  /* Make hero buttons larger and more touchable */
+  .hero-play-button {
+    bottom: 140px !important;
+    font-size: 1.4rem !important;
+    padding: 18px 40px !important;
+    min-height: 60px;
+  }
+
+  .hero-multiplayer-button {
+    bottom: 70px !important;
+    font-size: 1.2rem !important;
+    padding: 16px 36px !important;
+    min-height: 56px;
+  }
+
+  /* Prevent background movement */
+  .video-background {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+  }
+
+  /* Fix navbar on mobile */
+  .floating-nav-buttons {
+    top: 1rem;
+    right: 1rem;
+    gap: 0.5rem;
+  }
+
+  /* Improve scroll containers */
+  .features-grid,
+  .games-row {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+  }
+}
+
+/* Extra small phones */
+@media (max-width: 375px) {
+  .hero-play-button {
+    font-size: 1.2rem !important;
+    padding: 16px 32px !important;
+    bottom: 130px !important;
+  }
+
+  .hero-multiplayer-button {
+    font-size: 1.1rem !important;
+    padding: 14px 28px !important;
+    bottom: 65px !important;
+  }
+
+  .hero-game-title {
+    font-size: 2.5rem !important;
+  }
+}
+
+/* Prevent iOS Safari bounce */
+@supports (-webkit-touch-callout: none) {
+  .landing-page {
+    position: fixed;
+    overflow: hidden;
+  }
+  
+  body {
+    position: fixed;
+    overflow: hidden;
+    width: 100%;
+  }
+}

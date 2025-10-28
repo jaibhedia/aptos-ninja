@@ -5,8 +5,14 @@
   text-align: center;
   overflow: hidden;
   height: 100vh;
+  height: 100dvh; /* Dynamic viewport height for mobile */
   width: 100vw;
-  position: relative;
+  position: fixed; /* Prevent scrolling and bouncing on mobile */
+  top: 0;
+  left: 0;
+  touch-action: none; /* Prevent pull-to-refresh and scrolling */
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: none; /* Prevent overscroll bounce */
 }
 
 /* Beta Version Tag */
@@ -276,4 +282,78 @@
     height: 2px;
     bottom: -5px;
   }
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  .App {
+    overflow: hidden;
+    position: fixed;
+    overscroll-behavior-y: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Prevent iOS Safari bounce/scroll */
+  html, body {
+    position: fixed;
+    overflow: hidden;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Fix background from moving */
+  .landing-page,
+  .game-screen,
+  .start-screen,
+  .results-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  /* Beta tag smaller on mobile */
+  .beta-tag {
+    bottom: 10px;
+    left: 10px;
+    padding: 4px 8px;
+    font-size: 9px;
+  }
+
+  .beta-text {
+    font-size: 9px;
+    letter-spacing: 0.5px;
+  }
+}
+
+/* Prevent zoom on input focus (iOS Safari) */
+input, select, textarea {
+  font-size: 16px !important;
+}
+
+/* Disable pull-to-refresh */
+body {
+  overscroll-behavior-y: contain;
+}
+
+/* Prevent text selection during gameplay */
+.game-screen * {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Improve tap targets for mobile */
+button {
+  min-height: 44px;
+  min-width: 44px;
+  -webkit-tap-highlight-color: transparent;
 }

@@ -670,3 +670,67 @@
     font-size: 12px;
   }
 }
+
+/* Mobile optimizations - prevent scrolling and improve touch */
+@media (max-width: 768px) {
+  .multiplayer-lobby {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  /* Larger touch targets */
+  .back-button,
+  .tab,
+  .bet-tier-card,
+  .create-game-btn,
+  .join-btn,
+  .refresh-btn {
+    min-height: 48px;
+    min-width: 48px;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  .create-game-btn,
+  .join-btn {
+    font-size: 16px !important;
+    padding: 16px 24px !important;
+    min-height: 52px;
+  }
+
+  /* Fix scrollable areas */
+  .available-games {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  /* Better spacing on mobile */
+  .lobby-content {
+    padding: 16px;
+    padding-bottom: 80px; /* Space for bottom nav if any */
+  }
+
+  .lobby-header {
+    padding: 12px 16px;
+    position: sticky;
+    top: 0;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+    z-index: 100;
+  }
+
+  .lobby-tabs {
+    position: sticky;
+    top: 60px;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+    z-index: 99;
+    padding: 8px 0;
+  }
+}
