@@ -166,6 +166,8 @@ function App() {
           onStartGame={handleStartMultiplayerGame}
           onBack={handleBackToLanding}
         />
+        <SpeedInsights />
+        <Analytics />
       </div>
     );
   }
@@ -183,6 +185,8 @@ function App() {
           onMultiplayer={handleShowMultiplayer}
           aptos={aptos}
         />
+        <SpeedInsights />
+        <Analytics />
       </div>
     );
   }
