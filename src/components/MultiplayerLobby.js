@@ -4,7 +4,7 @@ import multiplayerService from '../services/multiplayerService';
 import './MultiplayerLobby.css';
 
 // Use environment variable or fallback to localhost
-const SOCKET_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+const SOCKET_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3001';
 
 const socket = io(SOCKET_URL, {
   autoConnect: false
