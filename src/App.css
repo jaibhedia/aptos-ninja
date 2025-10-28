@@ -1,0 +1,279 @@
+/* Import the original CSS styles */
+@import url('./styles/design-system.css');
+
+.App {
+  text-align: center;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+}
+
+/* Beta Version Tag */
+.beta-tag {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, rgba(31, 216, 204, 0.9), rgba(0, 212, 170, 0.9));
+  backdrop-filter: blur(10px);
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  animation: betaFloat 3s ease-in-out infinite;
+}
+
+@keyframes betaFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.beta-icon {
+  font-size: 16px;
+  animation: betaRotate 2s ease-in-out infinite;
+}
+
+@keyframes betaRotate {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-10deg);
+  }
+  75% {
+    transform: rotate(10deg);
+  }
+}
+
+.beta-text {
+  font-family: 'Orbitron', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Combo Display Animations - Cleaner and Less Hazy */
+@keyframes comboPulse {
+  0% {
+    filter: drop-shadow(0 2px 4px rgba(31, 216, 204, 0.3));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 2px 6px rgba(31, 216, 204, 0.4));
+    transform: scale(1.03);
+  }
+  100% {
+    filter: drop-shadow(0 2px 4px rgba(31, 216, 204, 0.3));
+    transform: scale(1);
+  }
+}
+
+@keyframes comboFlash {
+  0% {
+    filter: drop-shadow(0 2px 6px rgba(255, 68, 68, 0.4));
+    transform: scale(1);
+  }
+  100% {
+    filter: drop-shadow(0 2px 8px rgba(255, 68, 68, 0.5));
+    transform: scale(1.05);
+  }
+}
+
+@keyframes timerFlash {
+  0% {
+    box-shadow: 0 0 4px rgba(255, 68, 68, 0.4);
+    opacity: 1;
+  }
+  50% {
+    box-shadow: 0 0 6px rgba(255, 68, 68, 0.5);
+    opacity: 0.8;
+  }
+  100% {
+    box-shadow: 0 0 4px rgba(255, 68, 68, 0.4);
+    opacity: 1;
+  }
+}
+
+
+
+/* Game Header Styles */
+.game-header {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+}
+
+.game-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.game-nav-logo {
+  width: 28px;
+  height: 28px;
+  filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+}
+
+.back-to-landing-btn {
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.back-to-landing-btn:hover {
+  background: rgba(255, 215, 0, 0.1);
+  border-color: #2ED8A7;
+  transform: translateY(-1px);
+}
+
+/* Keyboard Shortcuts Hint */
+.keyboard-shortcuts-hint {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.shortcut-hint {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.key-indicator {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-family: 'Orbitron', monospace;
+  font-size: 10px;
+  font-weight: bold;
+  color: #2ED8A7;
+  text-shadow: 0 0 4px rgba(255, 215, 0, 0.5);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .keyboard-shortcuts-hint {
+    bottom: 10px;
+    left: 10px;
+    font-size: 11px;
+  }
+  
+  .key-indicator {
+    font-size: 9px;
+    padding: 1px 4px;
+  }
+}
+
+/* Health Bar System */
+.heart-container {
+  position: relative;
+  display: inline-block;
+  margin: 0 4px;
+}
+
+.heart {
+  font-size: 24px;
+  color: #ff4444;
+  text-shadow: 
+    0 0 10px rgba(255, 68, 68, 0.8),
+    0 0 20px rgba(255, 68, 68, 0.4);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  transition: all 0.3s ease;
+}
+
+.heart.lost {
+  color: #666;
+  text-shadow: none;
+  filter: grayscale(100%);
+  opacity: 0.3;
+}
+
+.health-bar {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 3px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 2px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.health-fill {
+  height: 100%;
+  transition: all 0.3s ease;
+  border-radius: 1px;
+  box-shadow: 0 0 4px currentColor;
+}
+
+/* Health bar animations */
+@keyframes healthPulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+.health-fill[style*="ff4444"] {
+  animation: healthPulse 1s infinite;
+}
+
+/* Responsive health bars */
+@media (max-width: 768px) {
+  .heart {
+    font-size: 20px;
+  }
+  
+  .health-bar {
+    width: 16px;
+    height: 2px;
+    bottom: -6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .heart {
+    font-size: 18px;
+  }
+  
+  .health-bar {
+    width: 14px;
+    height: 2px;
+    bottom: -5px;
+  }
+}
