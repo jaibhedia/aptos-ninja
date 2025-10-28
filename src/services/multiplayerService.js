@@ -1,5 +1,8 @@
 import { Aptos, AptosConfig, Network } from '@aptos-labs/ts-sdk';
 
+// Use environment variable or fallback to localhost
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+
 class MultiplayerGameService {
   constructor() {
     const config = new AptosConfig({ network: Network.TESTNET });
@@ -50,7 +53,7 @@ class MultiplayerGameService {
       
       // Report to backend
       try {
-        await fetch('http://localhost:3001/api/games', {
+        await fetch(`${API_BASE_URL}/api/games`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -100,7 +103,7 @@ class MultiplayerGameService {
       
       // Report to backend
       try {
-        await fetch(`http://localhost:3001/api/games/${gameId}/join`, {
+        await fetch(`${API_BASE_URL}/api/games/${gameId}/join`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -137,7 +140,7 @@ class MultiplayerGameService {
       
       // Report game completion to backend (so it gets removed from cache)
       try {
-        await fetch(`http://localhost:3001/api/games/${gameId}/finish`, {
+        await fetch(`${API_BASE_URL}/api/games/${gameId}/finish`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -158,7 +161,7 @@ class MultiplayerGameService {
   async getAvailableGames() {
     try {
       // ONLY use backend API - no blockchain queries to avoid rate limits
-      const backendUrl = 'http://localhost:3001/api/games/available';
+      const backendUrl = `${API_BASE_URL}/api/games/available`;
       
       const response = await fetch(backendUrl);
       if (response.ok) {
