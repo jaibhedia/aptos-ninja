@@ -495,16 +495,39 @@
 
 @media (max-width: 768px) {
   .mode-selection-screen {
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     padding: 10px;
     padding-bottom: 40px;
-    justify-content: flex-start;
     padding-top: 80px;
-    min-height: 100vh;
-    height: auto;
-    overflow-y: auto;
+    overflow-y: scroll !important;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: #FFD700 rgba(255, 255, 255, 0.1);
+  }
+
+  .mode-selection-screen::-webkit-scrollbar {
+    width: 8px;
+    display: block;
+  }
+
+  .mode-selection-screen::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+  }
+
+  .mode-selection-screen::-webkit-scrollbar-thumb {
+    background: #FFD700;
+    border-radius: 10px;
+    border: 2px solid rgba(0, 0, 0, 0.3);
+  }
+
+  .mode-selection-screen::-webkit-scrollbar-thumb:hover {
+    background: #FF6B6B;
   }
 
   .mode-header {
@@ -632,15 +655,39 @@
 
 @media (max-width: 480px) {
   .mode-selection-screen {
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     padding: 8px;
     padding-top: 70px;
     padding-bottom: 40px;
-    min-height: 100vh;
-    height: auto;
-    overflow-y: auto;
+    overflow-y: scroll !important;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: #FFD700 rgba(255, 255, 255, 0.1);
+  }
+
+  .mode-selection-screen::-webkit-scrollbar {
+    width: 6px;
+    display: block;
+  }
+
+  .mode-selection-screen::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+  }
+
+  .mode-selection-screen::-webkit-scrollbar-thumb {
+    background: #FFD700;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+  }
+
+  .mode-selection-screen::-webkit-scrollbar-thumb:hover {
+    background: #FF6B6B;
   }
 
   .mode-header {

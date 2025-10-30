@@ -1,41 +1,54 @@
 import React from 'react';
 import './ModeSelection.css';
 import '../styles/unified-design.css';
+import { 
+  GiArcheryTarget, 
+  GiLightningBow, 
+  GiLotusFlower,
+  GiCherry,
+  GiOrangeSlice,
+  GiLemon,
+  GiGrapes,
+  GiBanana,
+  GiPeach,
+  GiPear,
+  GiWatermelon
+} from 'react-icons/gi';
 
 const ModeSelection = ({ onSelectMode, onBack, bestScores = {} }) => {
   const modes = [
     {
       id: 'classic',
       name: 'CLASSIC',
-      emoji: '🎯',
+      emoji: <GiArcheryTarget />,
       background: 'linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%)',
       shadow: '0 0 40px rgba(255, 107, 107, 0.6)',
       description: '3 LIVES • BOMBS END GAME',
       subtitle: 'THE ORIGINAL CHALLENGE',
       bestScore: bestScores?.classic || 0,
-      particles: ['🍎', '🍊', '🍋']
+      particles: [<GiCherry key="p1" />, <GiOrangeSlice key="p2" />, <GiLemon key="p3" />]
     },
     {
       id: 'arcade',
       name: 'ARCADE',
-      emoji: '⚡',
+      emoji: <GiLightningBow />,
       background: 'linear-gradient(135deg, #4158D0 0%, #C850C0 100%)',
       shadow: '0 0 40px rgba(200, 80, 192, 0.6)',
       description: '60 SECONDS • MAXIMUM CHAOS',
       subtitle: 'SPEED IS EVERYTHING',
       bestScore: bestScores?.arcade || 0,
-      particles: ['⚡', '💥', '🔥']
+      particles: [<GiLightningBow />, <GiLightningBow />, <GiLightningBow />]
     },
     {
       id: 'zen',
       name: 'ZEN',
-      emoji: '🧘',
+      emoji: <GiLotusFlower />,
       background: 'linear-gradient(135deg, #0093E9 0%, #80D0C7 100%)',
       shadow: '0 0 40px rgba(0, 147, 233, 0.6)',
       description: '90 SECONDS • NO BOMBS',
       subtitle: 'PURE SLICING BLISS',
       bestScore: bestScores?.zen || 0,
-      particles: ['🍇', '🍓', '🍑']
+      particles: [<GiPear key="p1" />, <GiPear key="p2" />, <GiPear key="p3" />]
     }
   ];
 
@@ -43,14 +56,14 @@ const ModeSelection = ({ onSelectMode, onBack, bestScores = {} }) => {
     <div className="mode-selection-screen">
       {/* Animated Background */}
       <div className="mode-bg-animation">
-        <div className="floating-fruit fruit-1">🍎</div>
-        <div className="floating-fruit fruit-2">🍊</div>
-        <div className="floating-fruit fruit-3">🍋</div>
-        <div className="floating-fruit fruit-4">🍇</div>
-        <div className="floating-fruit fruit-5">🍓</div>
-        <div className="floating-fruit fruit-6">🍑</div>
-        <div className="floating-fruit fruit-7">🥝</div>
-        <div className="floating-fruit fruit-8">🍉</div>
+        <div className="floating-fruit fruit-1"><GiCherry /></div>
+        <div className="floating-fruit fruit-2"><GiOrangeSlice /></div>
+        <div className="floating-fruit fruit-3"><GiLemon /></div>
+        <div className="floating-fruit fruit-4"><GiGrapes /></div>
+        <div className="floating-fruit fruit-5"><GiBanana /></div>
+        <div className="floating-fruit fruit-6"><GiPeach /></div>
+        <div className="floating-fruit fruit-7"><GiPear /></div>
+        <div className="floating-fruit fruit-8"><GiWatermelon /></div>
       </div>
 
       {/* Header */}

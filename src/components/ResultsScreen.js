@@ -4,6 +4,7 @@ import TierDisplay from './TierDisplay';
 import { canMintNFTAtTier, getTierByScore } from '../utils/tierSystem';
 import '../styles/unified-design.css';
 import './ResultsScreen.css';
+import { GiTrophyCup, GiCrossedSwords } from 'react-icons/gi';
 
 const ResultsScreen = ({ gameState, onStartGame, onShowStartScreen, aptos, multiplayerGameId, onBackToMultiplayer }) => {
   const isNewBest = gameState.score > gameState.bestScore;
@@ -42,7 +43,7 @@ const ResultsScreen = ({ gameState, onStartGame, onShowStartScreen, aptos, multi
         {/* Simple Game Over Title */}
         <div className="game-over-title">
           <h1 className="unified-title">
-            {isNewBest && '🏆 '}Game Over{isNewBest && ' 🏆'}
+            {isNewBest && <><GiTrophyCup /> </>}Game Over{isNewBest && <> <GiTrophyCup /></>}
           </h1>
           {isNewBest && <div className="unified-badge gold new-best-badge">New Best!</div>}
         </div>
@@ -212,7 +213,7 @@ const ResultsScreen = ({ gameState, onStartGame, onShowStartScreen, aptos, multi
                 className="unified-button unified-button-secondary back-multiplayer" 
                 onClick={onBackToMultiplayer}
               >
-                ⚔️ Back to Arena
+                <GiCrossedSwords /> Back to Arena
               </button>
               <button 
                 className="unified-button back-home" 

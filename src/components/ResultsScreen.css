@@ -630,6 +630,30 @@
     padding: 16px;
     justify-content: flex-start;
     padding-top: 40px;
+    overflow-y: scroll !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: #2ED8A7 rgba(255, 255, 255, 0.1);
+  }
+
+  .results-screen::-webkit-scrollbar {
+    width: 8px;
+    display: block;
+  }
+
+  .results-screen::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+  }
+
+  .results-screen::-webkit-scrollbar-thumb {
+    background: #2ED8A7;
+    border-radius: 10px;
+    border: 2px solid rgba(0, 0, 0, 0.3);
+  }
+
+  .results-screen::-webkit-scrollbar-thumb:hover {
+    background: #FFD700;
   }
 
   .results-container {
@@ -699,6 +723,33 @@
 }
 
 @media (max-width: 480px) {
+  .results-screen {
+    overflow-y: scroll !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: #2ED8A7 rgba(255, 255, 255, 0.1);
+  }
+
+  .results-screen::-webkit-scrollbar {
+    width: 6px;
+    display: block;
+  }
+
+  .results-screen::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+  }
+
+  .results-screen::-webkit-scrollbar-thumb {
+    background: #2ED8A7;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+  }
+
+  .results-screen::-webkit-scrollbar-thumb:hover {
+    background: #FFD700;
+  }
+
   .game-over-title .unified-title {
     font-size: 36px;
     letter-spacing: 2px;

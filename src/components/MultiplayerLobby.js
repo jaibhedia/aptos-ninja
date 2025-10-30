@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import multiplayerService from '../services/multiplayerService';
 import './MultiplayerLobby.css';
+import { GiCrossedSwords, GiTwoCoins, GiTrophyCup, GiLightningBow, GiDiamondHard, GiGamepad, GiCrossedSabres, GiTargetArrows } from 'react-icons/gi';
+import { FaCrown } from 'react-icons/fa';
 
 // Use environment variable or fallback to localhost
 const SOCKET_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3001';
@@ -156,12 +158,12 @@ const MultiplayerLobby = ({ walletAddress, onStartGame, onBack }) => {
     <div className="multiplayer-lobby">
       {/* Animated Background */}
       <div className="lobby-bg-animation">
-        <div className="floating-icon icon-1">⚔️</div>
-        <div className="floating-icon icon-2">💰</div>
-        <div className="floating-icon icon-3">🏆</div>
-        <div className="floating-icon icon-4">⚡</div>
-        <div className="floating-icon icon-5">💎</div>
-        <div className="floating-icon icon-6">🎮</div>
+        <div className="floating-icon icon-1"><GiCrossedSwords /></div>
+        <div className="floating-icon icon-2"><GiTwoCoins /></div>
+        <div className="floating-icon icon-3"><GiTrophyCup /></div>
+        <div className="floating-icon icon-4"><GiLightningBow /></div>
+        <div className="floating-icon icon-5"><GiDiamondHard /></div>
+        <div className="floating-icon icon-6"><GiGamepad /></div>
       </div>
 
       {notification && (
@@ -184,7 +186,7 @@ const MultiplayerLobby = ({ walletAddress, onStartGame, onBack }) => {
       {/* Main Title with Slash Effect */}
       <div className="lobby-title-container">
         <h1 className="lobby-main-title">
-          <span className="title-text">⚔️ MULTIPLAYER ARENA</span>
+          <span className="title-text"><GiCrossedSwords /> MULTIPLAYER ARENA</span>
           <div className="title-slash"></div>
         </h1>
         <p className="lobby-subtitle">COMPETE FOR REAL STAKES</p>
@@ -197,21 +199,21 @@ const MultiplayerLobby = ({ walletAddress, onStartGame, onBack }) => {
             className={`lobby-tab ${activeTab === 'create' ? 'active' : ''}`}
             onClick={() => setActiveTab('create')}
           >
-            <span className="tab-icon">⚔️</span>
+            <span className="tab-icon"><GiCrossedSabres /></span>
             <span className="tab-text">Create</span>
           </button>
           <button 
             className={`lobby-tab ${activeTab === 'join' ? 'active' : ''}`}
             onClick={() => setActiveTab('join')}
           >
-            <span className="tab-icon">🎯</span>
+            <span className="tab-icon"><GiTargetArrows /></span>
             <span className="tab-text">Join</span>
           </button>
           <button 
             className={`lobby-tab ${activeTab === 'stats' ? 'active' : ''}`}
             onClick={() => setActiveTab('stats')}
           >
-            <span className="tab-icon">📊</span>
+            <span className="tab-icon"><GiTrophyCup /></span>
             <span className="tab-text">Stats</span>
           </button>
         </div>
@@ -232,10 +234,10 @@ const MultiplayerLobby = ({ walletAddress, onStartGame, onBack }) => {
                   >
                     <div className="tier-glow"></div>
                     <div className="tier-content">
-                      <div className="tier-icon">💰</div>
+                      <div className="tier-icon"><GiTwoCoins /></div>
                       <div className="tier-label">{tier.label}</div>
                       <div className="tier-amount">{tier.amount} APT</div>
-                      <div className="tier-prize">🏆 Win: {tier.amount * 2} APT</div>
+                      <div className="tier-prize"><GiTrophyCup /> Win: {tier.amount * 2} APT</div>
                       <div className="tier-description">{tier.description}</div>
                     </div>
                     <div className="tier-slash"></div>
@@ -255,7 +257,7 @@ const MultiplayerLobby = ({ walletAddress, onStartGame, onBack }) => {
                   </>
                 ) : (
                   <>
-                    <span className="btn-icon">⚔️</span>
+                    <span className="btn-icon"><GiCrossedSwords /></span>
                     Create Game - Stake {selectedTier?.amount || '?'} APT
                     <span className="btn-arrow">→</span>
                   </>
@@ -281,7 +283,7 @@ const MultiplayerLobby = ({ walletAddress, onStartGame, onBack }) => {
               <div className="available-games">
                 {availableGames.length === 0 ? (
                   <div className="no-games-state">
-                    <div className="no-games-icon">🎮</div>
+                    <div className="no-games-icon"><GiGamepad /></div>
                     <p className="no-games-text">No games available</p>
                     <p className="no-games-hint">Create your own game to get started!</p>
                   </div>
@@ -304,17 +306,17 @@ const MultiplayerLobby = ({ walletAddress, onStartGame, onBack }) => {
                             </div>
                             <div className="game-info">
                               <div className="info-row">
-                                <span className="info-icon">💰</span>
+                                <span className="info-icon"><GiTwoCoins /></span>
                                 <span className="info-label">Stake:</span>
                                 <span className="info-value">{tier?.amount || (betAmountOctas / 100000000)} APT</span>
                               </div>
                               <div className="info-row prize">
-                                <span className="info-icon">🏆</span>
+                                <span className="info-icon"><GiTrophyCup /></span>
                                 <span className="info-label">Prize:</span>
                                 <span className="info-value gold">{(tier?.amount || (betAmountOctas / 100000000)) * 2} APT</span>
                               </div>
                               <div className="info-row">
-                                <span className="info-icon">👤</span>
+                                <span className="info-icon"><GiGamepad /></span>
                                 <span className="info-label">Host:</span>
                                 <span className="info-value host">{multiplayerService.formatAddress(game.player1)}</span>
                               </div>
@@ -327,12 +329,12 @@ const MultiplayerLobby = ({ walletAddress, onStartGame, onBack }) => {
                           >
                             {isOwnGame ? (
                               <>
-                                <span className="btn-icon">⏳</span>
+                                <span className="btn-icon"><GiGamepad /></span>
                                 Your Game
                               </>
                             ) : (
                               <>
-                                <span className="btn-icon">⚔️</span>
+                                <span className="btn-icon"><GiCrossedSwords /></span>
                                 Join Battle
                                 <span className="btn-arrow">→</span>
                               </>
@@ -357,7 +359,7 @@ const MultiplayerLobby = ({ walletAddress, onStartGame, onBack }) => {
                   <div className="stat-card">
                     <div className="stat-glow"></div>
                     <div className="stat-content">
-                      <div className="stat-icon">🎮</div>
+                      <div className="stat-icon"><GiGamepad /></div>
                       <div className="stat-value">{playerStats.gamesPlayed}</div>
                       <div className="stat-label">Games Played</div>
                     </div>
@@ -366,7 +368,7 @@ const MultiplayerLobby = ({ walletAddress, onStartGame, onBack }) => {
                   <div className="stat-card">
                     <div className="stat-glow"></div>
                     <div className="stat-content">
-                      <div className="stat-icon">🏆</div>
+                      <div className="stat-icon"><GiTrophyCup /></div>
                       <div className="stat-value">{playerStats.gamesWon}</div>
                       <div className="stat-label">Games Won</div>
                     </div>
@@ -375,7 +377,7 @@ const MultiplayerLobby = ({ walletAddress, onStartGame, onBack }) => {
                   <div className="stat-card">
                     <div className="stat-glow"></div>
                     <div className="stat-content">
-                      <div className="stat-icon">📊</div>
+                      <div className="stat-icon"><GiTargetArrows /></div>
                       <div className="stat-value">{playerStats?.winRate || 0}%</div>
                       <div className="stat-label">Win Rate</div>
                     </div>
@@ -384,7 +386,7 @@ const MultiplayerLobby = ({ walletAddress, onStartGame, onBack }) => {
                   <div className="stat-card">
                     <div className="stat-glow"></div>
                     <div className="stat-content">
-                      <div className="stat-icon">💰</div>
+                      <div className="stat-icon"><GiTwoCoins /></div>
                       <div className="stat-value">{playerStats?.totalWagered?.toFixed(2) || '0.00'}</div>
                       <div className="stat-label">Total Wagered</div>
                     </div>
@@ -393,7 +395,7 @@ const MultiplayerLobby = ({ walletAddress, onStartGame, onBack }) => {
                   <div className="stat-card">
                     <div className="stat-glow"></div>
                     <div className="stat-content">
-                      <div className="stat-icon">💎</div>
+                      <div className="stat-icon"><GiDiamondHard /></div>
                       <div className="stat-value">{playerStats?.totalWinnings?.toFixed(2) || '0.00'}</div>
                       <div className="stat-label">Total Winnings</div>
                     </div>
