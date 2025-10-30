@@ -154,6 +154,9 @@ const MultiplayerLobby = ({ walletAddress, onStartGame, onBack }) => {
   };
 
   const betTiers = multiplayerService.getBetTiers();
+  
+  // Debug: Log bet tiers to console
+  console.log('🪙 Bet Tiers Data:', betTiers);
 
   return (
     <div className="multiplayer-lobby">
@@ -231,17 +234,35 @@ const MultiplayerLobby = ({ walletAddress, onStartGame, onBack }) => {
                     key={tier.id}
                     className={`bet-tier-card ${selectedTier?.id === tier.id ? 'selected' : ''}`}
                     onClick={() => setSelectedTier(tier)}
-                    style={{ animationDelay: `${index * 0.1}s` }}
+                    style={{ 
+                      animationDelay: `${index * 0.1}s`,
+                      borderColor: selectedTier?.id === tier.id ? tier.borderColor : 'rgba(255, 255, 255, 0.1)',
+                      boxShadow: selectedTier?.id === tier.id ? `0 0 40px ${tier.glowColor}` : 'none'
+                    }}
                   >
-                    <div className="tier-glow"></div>
+                    <div 
+                      className="tier-glow"
+                      style={{ 
+                        background: `linear-gradient(135deg, ${tier.borderColor} 0%, ${tier.color} 100%)`,
+                        opacity: selectedTier?.id === tier.id ? 0.5 : 0
+                      }}
+                    ></div>
                     <div className="tier-content">
                       <div className="tier-icon"><GiTwoCoins /></div>
-                      <div className="tier-label">{tier.label}</div>
-                      <div className="tier-amount">{tier.amount} APT</div>
-                      <div className="tier-prize"><GiTrophyCup /> Win: {tier.amount * 2} APT</div>
+                      <div className="tier-label" style={{ color: tier.borderColor }}>{tier.label}</div>
+                      <div className="tier-token-name" style={{ color: tier.color, fontSize: '14px', marginTop: '4px' }}>
+                        {tier.tokenName} ({tier.token})
+                      </div>
+                      <div className="tier-amount">{tier.amount} {tier.token}</div>
+                      <div className="tier-prize"><GiTrophyCup /> Win: {tier.amount * 2} {tier.token}</div>
                       <div className="tier-description">{tier.description}</div>
                     </div>
-                    <div className="tier-slash"></div>
+                    <div 
+                      className="tier-slash"
+                      style={{ 
+                        background: `linear-gradient(90deg, transparent, ${tier.glowColor}, transparent)` 
+                      }}
+                    ></div>
                   </div>
                 ))}
               </div>
@@ -250,6 +271,10 @@ const MultiplayerLobby = ({ walletAddress, onStartGame, onBack }) => {
                 className="create-game-btn"
                 onClick={handleCreateGame}
                 disabled={!selectedTier || loading}
+                style={selectedTier ? {
+                  background: `linear-gradient(135deg, ${selectedTier.borderColor} 0%, ${selectedTier.color} 100%)`,
+                  boxShadow: `0 8px 32px ${selectedTier.glowColor}`
+                } : {}}
               >
                 {loading ? (
                   <>
@@ -297,23 +322,48 @@ const MultiplayerLobby = ({ walletAddress, onStartGame, onBack }) => {
                       const isDisabled = loading || isOwnGame;
                       
                       return (
-                        <div key={index} className="game-card">
-                          <div className="card-glow-effect"></div>
+                        <div 
+                          key={index} 
+                          className="game-card"
+                          style={{
+                            borderColor: tier?.borderColor || 'rgba(255, 255, 255, 0.1)',
+                            boxShadow: tier ? `0 4px 20px ${tier.glowColor}` : 'none'
+                          }}
+                        >
+                          <div 
+                            className="card-glow-effect"
+                            style={{
+                              background: tier ? `linear-gradient(135deg, ${tier.borderColor} 0%, ${tier.color} 100%)` : 'none'
+                            }}
+                          ></div>
                           <div className="game-card-content">
                             <div className="game-header">
-                              <span className="tier-badge">{tier?.label || 'Unknown'}</span>
+                              <span 
+                                className="tier-badge"
+                                style={{
+                                  background: tier?.borderColor || '#FFD700',
+                                  color: '#000',
+                                  fontWeight: 'bold'
+                                }}
+                              >
+                                {tier?.label || 'Unknown'}
+                              </span>
                               <span className="game-status">🟢 Open</span>
                             </div>
                             <div className="game-info">
                               <div className="info-row">
                                 <span className="info-icon"><GiTwoCoins /></span>
                                 <span className="info-label">Stake:</span>
-                                <span className="info-value">{tier?.amount || (betAmountOctas / 100000000)} APT</span>
+                                <span className="info-value" style={{ color: tier?.color || '#fff' }}>
+                                  {tier?.amount || (betAmountOctas / 100000000)} {tier?.token || 'APT'}
+                                </span>
                               </div>
                               <div className="info-row prize">
                                 <span className="info-icon"><GiTrophyCup /></span>
                                 <span className="info-label">Prize:</span>
-                                <span className="info-value gold">{(tier?.amount || (betAmountOctas / 100000000)) * 2} APT</span>
+                                <span className="info-value gold" style={{ color: tier?.borderColor || '#FFD700' }}>
+                                  {(tier?.amount || (betAmountOctas / 100000000)) * 2} {tier?.token || 'APT'}
+                                </span>
                               </div>
                               <div className="info-row">
                                 <span className="info-icon"><GiGamepad /></span>
@@ -326,6 +376,10 @@ const MultiplayerLobby = ({ walletAddress, onStartGame, onBack }) => {
                             className="join-game-btn"
                             onClick={() => handleJoinGame(game.game_id)}
                             disabled={isDisabled}
+                            style={tier && !isDisabled ? {
+                              background: `linear-gradient(135deg, ${tier.borderColor} 0%, ${tier.color} 100%)`,
+                              boxShadow: `0 4px 16px ${tier.glowColor}`
+                            } : {}}
                           >
                             {isOwnGame ? (
                               <>

@@ -711,19 +711,42 @@ p {
   padding: 0;
   background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: white;
+  border: 2px solid var(--color-teal-300);
+  color: var(--color-teal-300);
   pointer-events: auto;
   cursor: pointer;
   user-select: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 20px rgba(var(--color-teal-300-rgb), 0.3);
 }
 
 .pause-btn:hover {
   background: var(--color-secondary-hover);
+  border-color: var(--color-teal-400);
+  color: var(--color-teal-400);
+  box-shadow: 0 0 30px rgba(var(--color-teal-300-rgb), 0.5);
 }
 
 .pause-btn:active {
   background: var(--color-secondary-active);
+  border-color: var(--color-teal-500);
+  color: var(--color-teal-500);
+  transform: scale(0.95);
+}
+
+.pause-btn-overlay:hover {
+  background: rgba(0, 0, 0, 0.85);
+  border-color: var(--color-teal-400);
+  color: var(--color-teal-400);
+  box-shadow: 0 0 30px rgba(var(--color-teal-300-rgb), 0.5);
+  transform: scale(1.05);
+}
+
+.pause-btn-overlay:active {
+  background: rgba(0, 0, 0, 0.9);
+  border-color: var(--color-teal-500);
+  color: var(--color-teal-500);
+  transform: scale(0.98);
 }
 
 /* Results Screen - Natural Design */

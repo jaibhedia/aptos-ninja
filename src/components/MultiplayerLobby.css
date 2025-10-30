@@ -346,30 +346,21 @@
 
 .bet-tier-card:hover {
   transform: translateY(-8px) scale(1.02);
-  border-color: rgba(255, 215, 0, 0.5);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
 }
 
 .bet-tier-card.selected {
-  border-color: #FFD700;
-  background: rgba(255, 215, 0, 0.1);
-  box-shadow: 0 0 40px rgba(255, 215, 0, 0.4);
+  background: rgba(0, 0, 0, 0.3);
   transform: translateY(-8px) scale(1.02);
 }
 
 .tier-glow {
   position: absolute;
   inset: -3px;
-  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
   border-radius: 20px;
-  opacity: 0;
   transition: opacity 0.4s ease;
   filter: blur(15px);
   z-index: -1;
-}
-
-.bet-tier-card.selected .tier-glow {
-  opacity: 0.5;
 }
 
 .tier-content {
@@ -395,8 +386,16 @@
 .tier-label {
   font-family: 'Impact', sans-serif;
   font-size: 24px;
-  color: #FFD700;
   letter-spacing: 2px;
+  transition: color 0.3s ease;
+}
+
+.tier-token-name {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: color 0.3s ease;
 }
 
 .tier-amount {
@@ -669,14 +668,13 @@
 }
 
 .tier-badge {
-  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
   padding: 6px 16px;
   border-radius: 20px;
   font-family: 'Impact', sans-serif;
   font-size: 14px;
   letter-spacing: 1px;
-  color: #000;
   font-weight: 700;
+  transition: all 0.3s ease;
 }
 
 .game-status {

@@ -9,7 +9,6 @@ import './TierDisplay.css';
 
 const TierDisplay = ({ totalScore, gamesPlayed, bestScore, compact = false }) => {
   const [stats, setStats] = useState(null);
-  const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
     const playerStats = calculatePlayerStats(totalScore, gamesPlayed, bestScore);
@@ -102,56 +101,6 @@ const TierDisplay = ({ totalScore, gamesPlayed, bestScore, compact = false }) =>
           <span className="crown-icon">👑</span>
           <h3>Maximum Rank Achieved!</h3>
           <p>You are among the elite. Keep slicing to maintain your legend!</p>
-        </div>
-      )}
-
-      <button 
-        className="details-toggle"
-        onClick={() => setShowDetails(!showDetails)}
-      >
-        {showDetails ? 'Hide' : 'Show'} Achievements & NFTs
-      </button>
-
-      {showDetails && (
-        <div className="tier-details-expanded">
-          {/* NFT Milestones */}
-          <div className="nft-section">
-            <h3>🎁 NFT Milestones</h3>
-            <div className="nft-grid">
-              {stats.unlockedNFTs.map(tier => (
-                <div key={tier.id} className="nft-card unlocked">
-                  <div className="nft-icon">{tier.icon}</div>
-                  <div className="nft-name">{tier.nftReward}</div>
-                  <div className="nft-status">✅ Unlocked</div>
-                </div>
-              ))}
-              {stats.totalNFTsAvailable > stats.unlockedNFTs.length && (
-                <div className="nft-card locked">
-                  <div className="nft-icon">🔒</div>
-                  <div className="nft-name">Keep Playing!</div>
-                  <div className="nft-status">
-                    {stats.unlockedNFTs.length}/{stats.totalNFTsAvailable} Unlocked
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Achievements */}
-          <div className="achievements-section">
-            <h3>🏆 Achievements ({stats.achievements.length})</h3>
-            <div className="achievements-grid">
-              {stats.achievements.map((achievement, idx) => (
-                <div key={idx} className="achievement-card">
-                  <span className="achievement-icon">{achievement.icon}</span>
-                  <div className="achievement-info">
-                    <div className="achievement-name">{achievement.name}</div>
-                    <div className="achievement-desc">{achievement.description}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       )}
     </div>

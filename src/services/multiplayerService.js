@@ -12,10 +12,54 @@ class MultiplayerGameService {
     this.MODULE_NAME = "multiplayer_game";
     
     this.BET_TIERS = [
-      { id: 1, amount: 0.1, label: "Casual", octas: 10000000, description: "Perfect for beginners" },
-      { id: 2, amount: 0.5, label: "Standard", octas: 50000000, description: "Most popular choice" },
-      { id: 3, amount: 1, label: "Competitive", octas: 100000000, description: "For serious players" },
-      { id: 4, amount: 5, label: "High Stakes", octas: 500000000, description: "Big risk, big reward" },
+      { 
+        id: 1, 
+        amount: 0.1, 
+        label: "Casual", 
+        octas: 10000000, 
+        description: "Perfect for beginners",
+        token: "APT",
+        tokenName: "Aptos",
+        color: "#2ED8A7",
+        borderColor: "#2ED8A7",
+        glowColor: "rgba(46, 216, 167, 0.3)"
+      },
+      { 
+        id: 2, 
+        amount: 0.5, 
+        label: "Standard", 
+        octas: 50000000, 
+        description: "Most popular choice",
+        token: "APT",
+        tokenName: "Aptos",
+        color: "#2ED8A7",
+        borderColor: "#FFD700",
+        glowColor: "rgba(255, 215, 0, 0.3)"
+      },
+      { 
+        id: 3, 
+        amount: 1, 
+        label: "Competitive", 
+        octas: 100000000, 
+        description: "For serious players",
+        token: "APT",
+        tokenName: "Aptos",
+        color: "#2ED8A7",
+        borderColor: "#FF6B6B",
+        glowColor: "rgba(255, 107, 107, 0.3)"
+      },
+      { 
+        id: 4, 
+        amount: 5, 
+        label: "High Stakes", 
+        octas: 500000000, 
+        description: "Big risk, big reward",
+        token: "APT",
+        tokenName: "Aptos",
+        color: "#2ED8A7",
+        borderColor: "#9D4EDD",
+        glowColor: "rgba(157, 78, 221, 0.3)"
+      },
     ];
   }
 

@@ -577,8 +577,10 @@
   .modes-container {
     grid-template-columns: 1fr;
     gap: 20px;
-    max-width: 500px;
-    padding: 0 16px;
+    max-width: 100%;
+    width: 100%;
+    padding: 0 20px;
+    margin: 0 auto;
   }
 
   /* Compact cards */
@@ -675,7 +677,8 @@
     left: 0;
     right: 0;
     bottom: 0;
-    padding: 8px;
+    width: 100%;
+    padding: 0;
     padding-top: 70px;
     padding-bottom: 40px;
     overflow-y: scroll !important;
@@ -722,11 +725,15 @@
 
   .mode-title-container {
     margin-bottom: 20px;
+    padding: 0 16px;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .title-text {
     font-size: 28px;
     letter-spacing: 2px;
+    word-wrap: break-word;
   }
 
   .mode-subtitle {
@@ -736,15 +743,26 @@
   }
 
   .modes-container {
-    gap: 16px;
+    grid-template-columns: 1fr;
+    gap: 20px;
     max-width: 100%;
-    padding: 0 12px;
+    width: 100%;
+    padding: 0 16px;
+    margin: 0 auto;
   }
 
   .card-content {
     padding: 20px 16px;
     gap: 10px;
     border-radius: 16px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .game-mode-card {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
   }
 
   .mode-emoji-container {
