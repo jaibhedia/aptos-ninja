@@ -1,32 +1,22 @@
 import React from 'react';
 import './ModeSelection.css';
 import '../styles/unified-design.css';
-import { 
-  GiArcheryTarget, 
-  GiLightningBow, 
-  GiLotusFlower,
-  GiCherry,
-  GiOrangeSlice,
-  GiLemon,
-  GiGrapes,
-  GiBanana,
-  GiPeach,
-  GiPear,
-  GiWatermelon
-} from 'react-icons/gi';
+import { GiTargetArrows, GiLightningBow, GiMeditation, GiCherry, GiOrange, GiStrawberry, GiGrapes, GiBanana, GiPeach, GiPear, GiWatermelon, GiLemon } from 'react-icons/gi';
+import { FaTrophy, FaPlay, FaArrowLeft, FaAppleAlt } from 'react-icons/fa';
+import { IoIosFlash } from 'react-icons/io';
 
 const ModeSelection = ({ onSelectMode, onBack, bestScores = {} }) => {
   const modes = [
     {
       id: 'classic',
       name: 'CLASSIC',
-      emoji: <GiArcheryTarget />,
+      emoji: <GiTargetArrows />,
       background: 'linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%)',
       shadow: '0 0 40px rgba(255, 107, 107, 0.6)',
       description: '3 LIVES • BOMBS END GAME',
       subtitle: 'THE ORIGINAL CHALLENGE',
       bestScore: bestScores?.classic || 0,
-      particles: [<GiCherry key="p1" />, <GiOrangeSlice key="p2" />, <GiLemon key="p3" />]
+      particles: [<GiCherry key="p1" />, <GiOrange key="p2" />, <GiLemon key="p3" />]
     },
     {
       id: 'arcade',
@@ -37,18 +27,18 @@ const ModeSelection = ({ onSelectMode, onBack, bestScores = {} }) => {
       description: '60 SECONDS • MAXIMUM CHAOS',
       subtitle: 'SPEED IS EVERYTHING',
       bestScore: bestScores?.arcade || 0,
-      particles: [<GiLightningBow />, <GiLightningBow />, <GiLightningBow />]
+      particles: [<IoIosFlash key="p1" />, <IoIosFlash key="p2" />, <IoIosFlash key="p3" />]
     },
     {
       id: 'zen',
       name: 'ZEN',
-      emoji: <GiLotusFlower />,
+      emoji: <GiMeditation />,
       background: 'linear-gradient(135deg, #0093E9 0%, #80D0C7 100%)',
       shadow: '0 0 40px rgba(0, 147, 233, 0.6)',
       description: '90 SECONDS • NO BOMBS',
       subtitle: 'PURE SLICING BLISS',
       bestScore: bestScores?.zen || 0,
-      particles: [<GiPear key="p1" />, <GiPear key="p2" />, <GiPear key="p3" />]
+      particles: [<GiPear key="p1" />, <GiStrawberry key="p2" />, <GiGrapes key="p3" />]
     }
   ];
 
@@ -57,7 +47,7 @@ const ModeSelection = ({ onSelectMode, onBack, bestScores = {} }) => {
       {/* Animated Background */}
       <div className="mode-bg-animation">
         <div className="floating-fruit fruit-1"><GiCherry /></div>
-        <div className="floating-fruit fruit-2"><GiOrangeSlice /></div>
+        <div className="floating-fruit fruit-2"><GiOrange /></div>
         <div className="floating-fruit fruit-3"><GiLemon /></div>
         <div className="floating-fruit fruit-4"><GiGrapes /></div>
         <div className="floating-fruit fruit-5"><GiBanana /></div>
@@ -69,7 +59,7 @@ const ModeSelection = ({ onSelectMode, onBack, bestScores = {} }) => {
       {/* Header */}
       <div className="mode-header">
         <button className="mode-back-btn" onClick={onBack}>
-          <span className="back-arrow">←</span>
+          <span className="back-arrow"><FaArrowLeft /></span>
           <span className="back-text">BACK</span>
         </button>
       </div>
@@ -129,7 +119,7 @@ const ModeSelection = ({ onSelectMode, onBack, bestScores = {} }) => {
               
               {mode.bestScore > 0 && (
                 <div className="mode-best">
-                  <span className="best-trophy">🏆</span>
+                  <span className="best-trophy"><FaTrophy /></span>
                   <span className="best-score">{mode.bestScore}</span>
                 </div>
               )}
@@ -139,7 +129,7 @@ const ModeSelection = ({ onSelectMode, onBack, bestScores = {} }) => {
                 style={{ background: mode.background }}
               >
                 <span className="play-text">PLAY</span>
-                <span className="play-arrow">▶</span>
+                <span className="play-arrow"><FaPlay /></span>
               </button>
             </div>
 

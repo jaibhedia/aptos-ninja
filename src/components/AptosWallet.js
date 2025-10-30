@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { GiGamepad, GiTrophyCup, GiTargetArrows, GiCrossedSwords } from 'react-icons/gi';
+import { FaExternalLinkAlt, FaTimes } from 'react-icons/fa';
+import { IoWalletOutline } from 'react-icons/io5';
 import './StarknetWallet.css';
 
 const AptosWallet = ({ aptos }) => {
@@ -107,7 +110,7 @@ const AptosWallet = ({ aptos }) => {
                 onClick={toggleNFTs}
                 title="View your NFTs"
               >
-                <span className="nft-icon">🎮</span>
+                <GiGamepad />
                 <span className="nft-count">{mockNFTs.length}</span>
               </button>
               
@@ -125,20 +128,25 @@ const AptosWallet = ({ aptos }) => {
           {showNFTs && (
             <div className="nft-gallery-dropdown">
               <div className="nft-gallery-header">
-                <h3>🎮 Your Game NFTs</h3>
+                <div className="nft-header-title">
+                  <GiGamepad className="nft-header-icon" />
+                  <h3>Your Game NFTs</h3>
+                </div>
                 <button 
                   className="close-gallery-btn"
                   onClick={toggleNFTs}
                 >
-                  ✕
+                  <FaTimes />
                 </button>
               </div>
               
               <div className="nft-gallery-content">
                 {mockNFTs.length === 0 ? (
                   <div className="no-nfts">
-                    <span className="no-nfts-icon">🎯</span>
-                    <p>No NFTs yet</p>
+                    <div className="no-nfts-icon-wrapper">
+                      <GiGamepad className="no-nfts-icon" />
+                    </div>
+                    <p className="no-nfts-title">No NFTs Yet</p>
                     <p className="no-nfts-hint">Play a game and mint your first NFT!</p>
                   </div>
                 ) : (
@@ -146,32 +154,56 @@ const AptosWallet = ({ aptos }) => {
                     {mockNFTs.map((nft) => (
                       <div key={nft.tokenId} className="nft-card">
                         <div className="nft-card-header">
-                          <span className="nft-token-id">#{nft.tokenId}</span>
+                          <div className="nft-badge">
+                            <GiGamepad />
+                            <span>#{nft.tokenId}</span>
+                          </div>
                           <span className="nft-timestamp">{formatTimestamp(nft.timestamp)}</span>
                         </div>
                         
                         <div className="nft-stats-grid">
                           <div className="nft-stat">
-                            <span className="stat-label">Score</span>
-                            <span className="stat-value highlight">{nft.score}</span>
+                            <div className="stat-icon-wrapper">
+                              <GiTrophyCup />
+                            </div>
+                            <div className="stat-content">
+                              <span className="stat-label">Score</span>
+                              <span className="stat-value">{nft.score}</span>
+                            </div>
                           </div>
                           <div className="nft-stat">
-                            <span className="stat-label">Max Combo</span>
-                            <span className="stat-value">{nft.maxCombo}x</span>
+                            <div className="stat-icon-wrapper">
+                              <GiCrossedSwords />
+                            </div>
+                            <div className="stat-content">
+                              <span className="stat-label">Max Combo</span>
+                              <span className="stat-value">{nft.maxCombo}x</span>
+                            </div>
                           </div>
                           <div className="nft-stat">
-                            <span className="stat-label">Tokens</span>
-                            <span className="stat-value">{nft.tokensSliced}</span>
+                            <div className="stat-icon-wrapper">
+                              <GiTargetArrows />
+                            </div>
+                            <div className="stat-content">
+                              <span className="stat-label">Tokens</span>
+                              <span className="stat-value">{nft.tokensSliced}</span>
+                            </div>
                           </div>
                           <div className="nft-stat">
-                            <span className="stat-label">Slashes</span>
-                            <span className="stat-value">{nft.totalSlashes}</span>
+                            <div className="stat-icon-wrapper">
+                              <GiCrossedSwords />
+                            </div>
+                            <div className="stat-content">
+                              <span className="stat-label">Slashes</span>
+                              <span className="stat-value">{nft.totalSlashes}</span>
+                            </div>
                           </div>
                         </div>
                         
                         <div className="nft-card-footer">
                           <button className="view-nft-btn">
-                            View on Explorer
+                            <span>View on Explorer</span>
+                            <FaExternalLinkAlt />
                           </button>
                         </div>
                       </div>

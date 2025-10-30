@@ -549,6 +549,9 @@
 .refresh-icon {
   font-size: 20px;
   transition: transform 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .refresh-btn:hover .refresh-icon {
@@ -1036,11 +1039,20 @@
   }
 
   .stats-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
 
   .stat-value {
-    font-size: 28px;
+    font-size: 24px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+  }
+
+  .stat-icon {
+    font-size: 36px;
   }
 }
 

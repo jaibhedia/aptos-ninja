@@ -3,7 +3,8 @@ import { io } from 'socket.io-client';
 import multiplayerService from '../services/multiplayerService';
 import './MultiplayerLobby.css';
 import { GiCrossedSwords, GiTwoCoins, GiTrophyCup, GiLightningBow, GiDiamondHard, GiGamepad, GiCrossedSabres, GiTargetArrows } from 'react-icons/gi';
-import { FaCrown } from 'react-icons/fa';
+import { FaCrown, FaChartLine } from 'react-icons/fa';
+import { IoMdRefresh } from 'react-icons/io';
 
 // Use environment variable or fallback to localhost
 const SOCKET_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3001';
@@ -257,9 +258,8 @@ const MultiplayerLobby = ({ walletAddress, onStartGame, onBack }) => {
                   </>
                 ) : (
                   <>
-                    <span className="btn-icon"><GiCrossedSwords /></span>
+                   
                     Create Game - Stake {selectedTier?.amount || '?'} APT
-                    <span className="btn-arrow">→</span>
                   </>
                 )}
               </button>
@@ -276,7 +276,7 @@ const MultiplayerLobby = ({ walletAddress, onStartGame, onBack }) => {
                 onClick={() => fetchAvailableGames()}
                 disabled={loading}
               >
-                <span className="refresh-icon">🔄</span>
+                <span className="refresh-icon"><IoMdRefresh /></span>
                 Refresh Games
               </button>
 
@@ -404,7 +404,7 @@ const MultiplayerLobby = ({ walletAddress, onStartGame, onBack }) => {
                   <div className="stat-card">
                     <div className="stat-glow"></div>
                     <div className="stat-content">
-                      <div className="stat-icon">📈</div>
+                      <div className="stat-icon"><FaChartLine /></div>
                       <div className="stat-value">
                         {(playerStats.totalWinnings - playerStats.totalWagered).toFixed(2)}
                       </div>
