@@ -5,29 +5,50 @@ export const useGameState = () => {
   
   const [gameState, setGameState] = useState({
     screen: 'start',
+    mode: null, // 'classic', 'arcade', 'zen'
     score: 0,
     lives: 3,
     heartHealth: [100, 100, 100], // Health for each heart [heart1, heart2, heart3]
     maxHealth: 100,
     bestScore: parseInt(localStorage.getItem('fruitNinjaBestScore')) || 0,
+    bestScoreClassic: parseInt(localStorage.getItem('bestScoreClassic')) || 0,
+    bestScoreArcade: parseInt(localStorage.getItem('bestScoreArcade')) || 0,
+    bestScoreZen: parseInt(localStorage.getItem('bestScoreZen')) || 0,
+    totalScore: parseInt(localStorage.getItem('totalScore')) || 0,
+    gamesPlayed: parseInt(localStorage.getItem('gamesPlayed')) || 0,
     isGameRunning: false,
     isPaused: false,
     totalSlashes: 0,
     limesSlashed: 0,
     bombsHit: 0,
     gameStartTime: null,
+    timeRemaining: null, // For Arcade mode
     combo: 0,
     maxCombo: 0,
     lastSlashTime: 0
   }); 
 
-  const startGame = useCallback(async () => {
+  const startGame = useCallback(async (mode = 'classic') => {
     lastPenaltyTime.current = 0; // Reset debounce timer for new game
+    
+    // Mode-specific settings
+    let initialLives = 3;
+    let initialTime = null;
+    
+    if (mode === 'arcade') {
+      initialLives = 3;
+      initialTime = 60; // 60 seconds for Arcade mode
+    } else if (mode === 'zen') {
+      initialLives = 999; // Effectively unlimited in Zen mode
+      initialTime = 90; // 90 seconds for Zen mode
+    }
+    
     setGameState(prev => ({
       ...prev, 
       screen: 'game',
+      mode: mode,
       score: 0,
-      lives: 3,
+      lives: initialLives,
       heartHealth: [100, 100, 100], // Reset all hearts to full health
       isGameRunning: true,
       isPaused: false,
@@ -35,6 +56,7 @@ export const useGameState = () => {
       citreaSlashed: 0,
       bombsHit: 0,
       gameStartTime: Date.now(),
+      timeRemaining: initialTime,
       combo: 0,
       maxCombo: 0,
       lastSlashTime: 0
@@ -44,12 +66,46 @@ export const useGameState = () => {
 
   const endGame = useCallback(async () => {
     setGameState(prev => {
+      // Update mode-specific best score
+      let updatedState = { ...prev };
+      
+      if (prev.mode === 'classic') {
+        const newBest = Math.max(prev.score, prev.bestScoreClassic);
+        if (newBest > prev.bestScoreClassic) {
+          localStorage.setItem('bestScoreClassic', newBest.toString());
+          updatedState.bestScoreClassic = newBest;
+        }
+      } else if (prev.mode === 'arcade') {
+        const newBest = Math.max(prev.score, prev.bestScoreArcade);
+        if (newBest > prev.bestScoreArcade) {
+          localStorage.setItem('bestScoreArcade', newBest.toString());
+          updatedState.bestScoreArcade = newBest;
+        }
+      } else if (prev.mode === 'zen') {
+        const newBest = Math.max(prev.score, prev.bestScoreZen);
+        if (newBest > prev.bestScoreZen) {
+          localStorage.setItem('bestScoreZen', newBest.toString());
+          updatedState.bestScoreZen = newBest;
+        }
+      }
+      
+      // Overall best score
       const newBestScore = prev.score > prev.bestScore ? prev.score : prev.bestScore;
       if (newBestScore > prev.bestScore) {
         localStorage.setItem('fruitNinjaBestScore', newBestScore.toString());
+        updatedState.bestScore = newBestScore;
       }
+      
+      // Update total score and games played for tier system
+      const newTotalScore = prev.totalScore + prev.score;
+      const newGamesPlayed = prev.gamesPlayed + 1;
+      localStorage.setItem('totalScore', newTotalScore.toString());
+      localStorage.setItem('gamesPlayed', newGamesPlayed.toString());
+      updatedState.totalScore = newTotalScore;
+      updatedState.gamesPlayed = newGamesPlayed;
+      
       return {
-        ...prev,
+        ...updatedState,
         screen: 'results',
         isGameRunning: false,
         isPaused: false,
@@ -206,6 +262,32 @@ export const useGameState = () => {
     }, 300);
   }, []);
 
+  const decrementTimer = useCallback(() => {
+    setGameState(prev => {
+      if (prev.timeRemaining === null || prev.timeRemaining <= 0) {
+        return prev;
+      }
+      
+      const newTime = prev.timeRemaining - 1;
+      
+      // End game when timer hits 0
+      if (newTime <= 0) {
+        setTimeout(() => {
+          endGame();
+        }, 100);
+        return {
+          ...prev,
+          timeRemaining: 0
+        };
+      }
+      
+      return {
+        ...prev,
+        timeRemaining: newTime
+      };
+    });
+  }, [endGame]);
+
   return {
     gameState,
     startGame,
@@ -216,6 +298,7 @@ export const useGameState = () => {
     loseLiveFromMissedToken,
     togglePause,
     createParticles,
-    createScreenFlash
+    createScreenFlash,
+    decrementTimer
   };
 };

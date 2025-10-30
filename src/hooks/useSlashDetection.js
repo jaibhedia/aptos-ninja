@@ -11,7 +11,8 @@ export const useSlashDetection = (
   addTrailPoint,
   isSlashing,
   addPopup,
-  onSlashRecorded // Optional callback for blockchain recording
+  onSlashRecorded, // Optional callback for blockchain recording
+  showComboMessage // Function to show combo on game screen
 ) => {
   const [slashPath, setSlashPath] = useState([]);
   const lastMousePos = useRef({ x: 0, y: 0 });
@@ -36,45 +37,109 @@ export const useSlashDetection = (
     if (!canvas) return;
     
     const rect = canvas.getBoundingClientRect();
+    const tokenColor = item.token?.ringColor || item.token?.color || '#FFD700';
     
-    for (let i = 0; i < 2; i++) {
-      const half = document.createElement('div');
-      half.className = 'slice-half';
-      half.style.position = 'fixed';
-      half.style.left = (rect.left + item.x - 20) + 'px';
-      half.style.top = (rect.top + item.y - 20) + 'px';
-      half.style.width = '40px';
-      half.style.height = '40px';
-      half.style.background = item.type.color;
-      half.style.borderRadius = '50%';
-      half.style.pointerEvents = 'none';
-      half.style.zIndex = '999';
-      half.style.fontSize = '24px';
-      half.style.display = 'flex';
-      half.style.alignItems = 'center';
-      half.style.justifyContent = 'center';
-      half.textContent = item.type.symbol;
+    // Create more prominent scratch/slash mark on background
+    const scratchMark = document.createElement('div');
+    scratchMark.className = 'scratch-mark';
+    scratchMark.style.position = 'fixed';
+    scratchMark.style.left = (rect.left + item.x - 40) + 'px';
+    scratchMark.style.top = (rect.top + item.y - 40) + 'px';
+    scratchMark.style.width = '80px';
+    scratchMark.style.height = '80px';
+    scratchMark.style.pointerEvents = 'none';
+    scratchMark.style.zIndex = '1';
+    scratchMark.style.opacity = '0';
+    
+    // Create slash line effect - more visible
+    const slashLine = document.createElement('div');
+    slashLine.style.position = 'absolute';
+    slashLine.style.left = '40px';
+    slashLine.style.top = '0';
+    slashLine.style.width = '3px';
+    slashLine.style.height = '80px';
+    slashLine.style.background = `linear-gradient(180deg, transparent, ${tokenColor}55, ${tokenColor}aa, ${tokenColor}55, transparent)`;
+    slashLine.style.transform = `rotate(${angle}rad)`;
+    slashLine.style.transformOrigin = 'center center';
+    slashLine.style.filter = 'blur(1.5px)';
+    slashLine.style.boxShadow = `0 0 12px ${tokenColor}99, 0 0 6px ${tokenColor}cc`;
+    scratchMark.appendChild(slashLine);
+    
+    document.body.appendChild(scratchMark);
+    
+    // Fade in quickly, then fade out slowly
+    requestAnimationFrame(() => {
+      scratchMark.style.transition = 'opacity 0.15s ease-out';
+      scratchMark.style.opacity = '0.75';
+    });
+    
+    setTimeout(() => {
+      scratchMark.style.transition = 'opacity 2.5s ease-out';
+      scratchMark.style.opacity = '0';
+    }, 150);
+    
+    setTimeout(() => {
+      if (document.body.contains(scratchMark)) {
+        document.body.removeChild(scratchMark);
+      }
+    }, 2650);
+    
+    // Create token shatter particles (crumbly effect)
+    const shatterCount = 12 + Math.floor(Math.random() * 8); // 12-20 pieces
+    for (let i = 0; i < shatterCount; i++) {
+      const shard = document.createElement('div');
+      shard.className = 'token-shard';
+      shard.style.position = 'fixed';
+      shard.style.left = (rect.left + item.x) + 'px';
+      shard.style.top = (rect.top + item.y) + 'px';
       
-      const direction = i === 0 ? 1 : -1;
-      const perpAngle = angle + Math.PI / 2;
-      const vx = Math.cos(perpAngle) * direction * 100;
-      const vy = Math.sin(perpAngle) * direction * 100 - 50;
+      // Random shard size (smaller, more subtle)
+      const size = 4 + Math.random() * 8; // 4-12px
+      shard.style.width = size + 'px';
+      shard.style.height = size + 'px';
       
-      half.style.transform = 'rotate(' + angle + 'rad)';
-      half.style.transition = 'transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.8s ease-out';
+      // Mix of colors - token color and white/light fragments
+      const isWhiteFragment = Math.random() > 0.6;
+      shard.style.background = isWhiteFragment 
+        ? `rgba(255, 255, 255, ${0.7 + Math.random() * 0.3})` 
+        : tokenColor;
       
-      document.body.appendChild(half);
+      // Random shapes for variety
+      const shapeRand = Math.random();
+      if (shapeRand < 0.3) {
+        shard.style.borderRadius = '50%'; // Circle
+      } else if (shapeRand < 0.6) {
+        shard.style.borderRadius = '2px'; // Square
+      } else {
+        shard.style.borderRadius = '30%'; // Slightly rounded
+      }
+      
+      shard.style.pointerEvents = 'none';
+      shard.style.zIndex = '999';
+      shard.style.opacity = '0.9';
+      shard.style.boxShadow = `0 1px 3px rgba(0, 0, 0, 0.3)`;
+      
+      // Random velocity (more subtle, less chaotic)
+      const shatterAngle = Math.random() * Math.PI * 2;
+      const shatterSpeed = 40 + Math.random() * 80; // Slower, more controlled
+      const vx = Math.cos(shatterAngle) * shatterSpeed;
+      const vy = Math.sin(shatterAngle) * shatterSpeed - 15; // Slight upward bias
+      const rotation = Math.random() * 360;
+      
+      shard.style.transition = 'all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+      
+      document.body.appendChild(shard);
       
       requestAnimationFrame(() => {
-        half.style.transform = 'translate(' + vx + 'px, ' + vy + 'px) rotate(' + (angle + direction * Math.PI) + 'rad) scale(0.3)';
-        half.style.opacity = '0';
+        shard.style.transform = `translate(${vx}px, ${vy}px) rotate(${rotation}deg) scale(0.3)`;
+        shard.style.opacity = '0';
       });
       
       setTimeout(() => {
-        if (document.body.contains(half)) {
-          document.body.removeChild(half);
+        if (document.body.contains(shard)) {
+          document.body.removeChild(shard);
         }
-      }, 800);
+      }, 700);
     }
   }, [canvasRef]);
 
@@ -133,8 +198,13 @@ export const useSlashDetection = (
           
           // Create combo popup callback
           const handleComboPopup = (combo, bonusPoints) => {
+            // Show combo on game screen (Fruit Ninja style)
+            if (showComboMessage && combo >= 2) {
+              showComboMessage(combo, bonusPoints);
+            }
+            
+            // Also show small popup (can be removed if not wanted)
             if (addPopup) {
-              // Create combo popup slightly offset from regular popup
               setTimeout(() => {
                 addPopup(popupX + 30, popupY - 20, bonusPoints, 'combo', combo);
               }, 200);

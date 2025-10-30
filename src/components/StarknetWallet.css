@@ -1,6 +1,8 @@
 .starknet-wallet {
   position: relative;
   z-index: 1000;
+  display: flex;
+  align-items: center;
 }
 
 /* Wallet Popup */
@@ -411,9 +413,16 @@
 
 /* Mobile responsive */
 @media (max-width: 768px) {
+  .starknet-wallet {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
   .wallet-connect-btn {
     padding: 8px 16px;
     font-size: 12px;
+    white-space: nowrap;
   }
 
   .wallet-address {

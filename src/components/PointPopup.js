@@ -45,8 +45,8 @@ const PopupItem = ({ popup, onRemove }) => {
     >
       {popup.type === 'combo' ? (
         <div className="combo-popup">
-          <div className="combo-text">{popup.combo}x COMBO!</div>
-          <div className="combo-bonus">+{popup.points} BONUS</div>
+          <div className="combo-text">X{popup.combo}</div>
+          <div className="combo-bonus">+{popup.points}</div>
         </div>
       ) : (
         <div className="point-value">

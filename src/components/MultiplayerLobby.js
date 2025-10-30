@@ -154,192 +154,271 @@ const MultiplayerLobby = ({ walletAddress, onStartGame, onBack }) => {
 
   return (
     <div className="multiplayer-lobby">
+      {/* Animated Background */}
+      <div className="lobby-bg-animation">
+        <div className="floating-icon icon-1">⚔️</div>
+        <div className="floating-icon icon-2">💰</div>
+        <div className="floating-icon icon-3">🏆</div>
+        <div className="floating-icon icon-4">⚡</div>
+        <div className="floating-icon icon-5">💎</div>
+        <div className="floating-icon icon-6">🎮</div>
+      </div>
+
       {notification && (
         <div className={`lobby-notification ${notification.type}`}>
           {notification.message}
         </div>
       )}
 
+      {/* Header */}
       <div className="lobby-header">
-        <button className="back-button" onClick={onBack}>← Back</button>
-        <h1>⚔️ MULTIPLAYER ARENA</h1>
-        <div className="wallet-info">
+        <button className="lobby-back-btn" onClick={onBack}>
+          <span className="back-arrow">←</span>
+          <span className="back-text">BACK</span>
+        </button>
+        <div className="wallet-badge">
           {multiplayerService.formatAddress(walletAddress)}
         </div>
       </div>
 
-      <div className="lobby-tabs">
-        <button 
-          className={`tab ${activeTab === 'create' ? 'active' : ''}`}
-          onClick={() => setActiveTab('create')}
-        >
-          Create Game
-        </button>
-        <button 
-          className={`tab ${activeTab === 'join' ? 'active' : ''}`}
-          onClick={() => setActiveTab('join')}
-        >
-          Join Game
-        </button>
-        <button 
-          className={`tab ${activeTab === 'stats' ? 'active' : ''}`}
-          onClick={() => setActiveTab('stats')}
-        >
-          My Stats
-        </button>
+      {/* Main Title with Slash Effect */}
+      <div className="lobby-title-container">
+        <h1 className="lobby-main-title">
+          <span className="title-text">⚔️ MULTIPLAYER ARENA</span>
+          <div className="title-slash"></div>
+        </h1>
+        <p className="lobby-subtitle">COMPETE FOR REAL STAKES</p>
       </div>
 
-      <div className="lobby-content">
-        {activeTab === 'create' && (
-          <div className="create-game-section">
-            <h2>Choose Your Stake</h2>
-            <p className="section-description">Winner takes all! Select your bet tier to create a new game.</p>
-            
-            <div className="bet-tiers">
-              {betTiers.map(tier => (
-                <div 
-                  key={tier.id}
-                  className={`bet-tier-card ${selectedTier?.id === tier.id ? 'selected' : ''}`}
-                  onClick={() => setSelectedTier(tier)}
-                >
-                  <div className="tier-label">{tier.label}</div>
-                  <div className="tier-amount">{tier.amount} APT</div>
-                  <div className="tier-prize">Win: {tier.amount * 2} APT</div>
-                  <div className="tier-description">{tier.description}</div>
-                </div>
-              ))}
+      <div className="lobby-content-wrapper">
+        {/* Tabs */}
+        <div className="lobby-tabs">
+          <button 
+            className={`lobby-tab ${activeTab === 'create' ? 'active' : ''}`}
+            onClick={() => setActiveTab('create')}
+          >
+            <span className="tab-icon">⚔️</span>
+            <span className="tab-text">Create</span>
+          </button>
+          <button 
+            className={`lobby-tab ${activeTab === 'join' ? 'active' : ''}`}
+            onClick={() => setActiveTab('join')}
+          >
+            <span className="tab-icon">🎯</span>
+            <span className="tab-text">Join</span>
+          </button>
+          <button 
+            className={`lobby-tab ${activeTab === 'stats' ? 'active' : ''}`}
+            onClick={() => setActiveTab('stats')}
+          >
+            <span className="tab-icon">📊</span>
+            <span className="tab-text">Stats</span>
+          </button>
+        </div>
+
+        <div className="lobby-content">
+          {activeTab === 'create' && (
+            <div className="create-game-section">
+              <h2 className="section-title">Choose Your Stake</h2>
+              <p className="section-description">Winner takes all! Select your bet tier to create a new game.</p>
+              
+              <div className="bet-tiers-grid">
+                {betTiers.map((tier, index) => (
+                  <div 
+                    key={tier.id}
+                    className={`bet-tier-card ${selectedTier?.id === tier.id ? 'selected' : ''}`}
+                    onClick={() => setSelectedTier(tier)}
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
+                    <div className="tier-glow"></div>
+                    <div className="tier-content">
+                      <div className="tier-icon">💰</div>
+                      <div className="tier-label">{tier.label}</div>
+                      <div className="tier-amount">{tier.amount} APT</div>
+                      <div className="tier-prize">🏆 Win: {tier.amount * 2} APT</div>
+                      <div className="tier-description">{tier.description}</div>
+                    </div>
+                    <div className="tier-slash"></div>
+                  </div>
+                ))}
+              </div>
+
+              <button 
+                className="create-game-btn"
+                onClick={handleCreateGame}
+                disabled={!selectedTier || loading}
+              >
+                {loading ? (
+                  <>
+                    <span className="btn-spinner"></span>
+                    Creating Game...
+                  </>
+                ) : (
+                  <>
+                    <span className="btn-icon">⚔️</span>
+                    Create Game - Stake {selectedTier?.amount || '?'} APT
+                    <span className="btn-arrow">→</span>
+                  </>
+                )}
+              </button>
             </div>
+          )}
 
-            <button 
-              className="create-game-btn"
-              onClick={handleCreateGame}
-              disabled={!selectedTier || loading}
-            >
-              {loading ? 'Creating Game...' : `Create Game - Stake ${selectedTier?.amount || '?'} APT`}
-            </button>
-          </div>
-        )}
+          {activeTab === 'join' && (
+            <div className="join-game-section">
+              <h2 className="section-title">Available Games</h2>
+              <p className="section-description">Join an open game and compete for the prize pool!</p>
+              
+              <button 
+                className="refresh-btn"
+                onClick={() => fetchAvailableGames()}
+                disabled={loading}
+              >
+                <span className="refresh-icon">🔄</span>
+                Refresh Games
+              </button>
 
-        {activeTab === 'join' && (
-          <div className="join-game-section">
-            <h2>Available Games</h2>
-            <p className="section-description">Join an open game and compete for the prize pool!</p>
-            
-            <button 
-              className="refresh-btn"
-              onClick={() => {
-                fetchAvailableGames();
-              }}
-              disabled={loading}
-            >
-              🔄 Refresh
-            </button>
-
-            <div className="debug-info" style={{ 
-              padding: '10px', 
-              background: 'rgba(255,255,255,0.1)', 
-              borderRadius: '8px', 
-              marginBottom: '20px',
-              fontFamily: 'monospace',
-              fontSize: '12px'
-            }}>
-              <div>Available Games Count: {availableGames.length}</div>
-              <div>Wallet: {walletAddress || 'Not connected'}</div>
-              <div>Loading: {loading ? 'Yes' : 'No'}</div>
+              <div className="available-games">
+                {availableGames.length === 0 ? (
+                  <div className="no-games-state">
+                    <div className="no-games-icon">🎮</div>
+                    <p className="no-games-text">No games available</p>
+                    <p className="no-games-hint">Create your own game to get started!</p>
+                  </div>
+                ) : (
+                  <div className="games-list">
+                    {availableGames.map((game, index) => {
+                      const betAmountOctas = parseInt(game.bet_amount);
+                      const tier = betTiers.find(t => t.octas === betAmountOctas);
+                      
+                      const isOwnGame = multiplayerService.compareAddresses(game.player1, walletAddress);
+                      const isDisabled = loading || isOwnGame;
+                      
+                      return (
+                        <div key={index} className="game-card">
+                          <div className="card-glow-effect"></div>
+                          <div className="game-card-content">
+                            <div className="game-header">
+                              <span className="tier-badge">{tier?.label || 'Unknown'}</span>
+                              <span className="game-status">🟢 Open</span>
+                            </div>
+                            <div className="game-info">
+                              <div className="info-row">
+                                <span className="info-icon">💰</span>
+                                <span className="info-label">Stake:</span>
+                                <span className="info-value">{tier?.amount || (betAmountOctas / 100000000)} APT</span>
+                              </div>
+                              <div className="info-row prize">
+                                <span className="info-icon">🏆</span>
+                                <span className="info-label">Prize:</span>
+                                <span className="info-value gold">{(tier?.amount || (betAmountOctas / 100000000)) * 2} APT</span>
+                              </div>
+                              <div className="info-row">
+                                <span className="info-icon">👤</span>
+                                <span className="info-label">Host:</span>
+                                <span className="info-value host">{multiplayerService.formatAddress(game.player1)}</span>
+                              </div>
+                            </div>
+                          </div>
+                          <button 
+                            className="join-game-btn"
+                            onClick={() => handleJoinGame(game.game_id)}
+                            disabled={isDisabled}
+                          >
+                            {isOwnGame ? (
+                              <>
+                                <span className="btn-icon">⏳</span>
+                                Your Game
+                              </>
+                            ) : (
+                              <>
+                                <span className="btn-icon">⚔️</span>
+                                Join Battle
+                                <span className="btn-arrow">→</span>
+                              </>
+                            )}
+                          </button>
+                          <div className="card-slash-effect"></div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             </div>
+          )}
 
-            <div className="available-games">
-              {availableGames.length === 0 ? (
-                <div className="no-games">
-                  <div className="no-games-icon">🎮</div>
-                  <p>No games available</p>
-                  <p className="no-games-hint">Create your own game to get started!</p>
+          {activeTab === 'stats' && (
+            <div className="stats-section">
+              <h2 className="section-title">Your Statistics</h2>
+              
+              {playerStats ? (
+                <div className="stats-grid">
+                  <div className="stat-card">
+                    <div className="stat-glow"></div>
+                    <div className="stat-content">
+                      <div className="stat-icon">🎮</div>
+                      <div className="stat-value">{playerStats.gamesPlayed}</div>
+                      <div className="stat-label">Games Played</div>
+                    </div>
+                  </div>
+                  
+                  <div className="stat-card">
+                    <div className="stat-glow"></div>
+                    <div className="stat-content">
+                      <div className="stat-icon">🏆</div>
+                      <div className="stat-value">{playerStats.gamesWon}</div>
+                      <div className="stat-label">Games Won</div>
+                    </div>
+                  </div>
+                  
+                  <div className="stat-card">
+                    <div className="stat-glow"></div>
+                    <div className="stat-content">
+                      <div className="stat-icon">📊</div>
+                      <div className="stat-value">{playerStats?.winRate || 0}%</div>
+                      <div className="stat-label">Win Rate</div>
+                    </div>
+                  </div>
+                  
+                  <div className="stat-card">
+                    <div className="stat-glow"></div>
+                    <div className="stat-content">
+                      <div className="stat-icon">💰</div>
+                      <div className="stat-value">{playerStats?.totalWagered?.toFixed(2) || '0.00'}</div>
+                      <div className="stat-label">Total Wagered</div>
+                    </div>
+                  </div>
+                  
+                  <div className="stat-card">
+                    <div className="stat-glow"></div>
+                    <div className="stat-content">
+                      <div className="stat-icon">💎</div>
+                      <div className="stat-value">{playerStats?.totalWinnings?.toFixed(2) || '0.00'}</div>
+                      <div className="stat-label">Total Winnings</div>
+                    </div>
+                  </div>
+                  
+                  <div className="stat-card">
+                    <div className="stat-glow"></div>
+                    <div className="stat-content">
+                      <div className="stat-icon">📈</div>
+                      <div className="stat-value">
+                        {(playerStats.totalWinnings - playerStats.totalWagered).toFixed(2)}
+                      </div>
+                      <div className="stat-label">Net Profit</div>
+                    </div>
+                  </div>
                 </div>
               ) : (
-                availableGames.map((game, index) => {
-                  const betAmountOctas = parseInt(game.bet_amount);
-                  const tier = betTiers.find(t => t.octas === betAmountOctas);
-                  
-                  const isOwnGame = multiplayerService.compareAddresses(game.player1, walletAddress);
-                  const isDisabled = loading || isOwnGame;
-                  
-                  return (
-                    <div key={index} className="game-card">
-                      <div className="game-info">
-                        <div className="game-tier">{tier?.label || 'Unknown'}</div>
-                        <div className="game-stake">Stake: {tier?.amount || (betAmountOctas / 100000000)} APT</div>
-                        <div className="game-prize">Prize: {(tier?.amount || (betAmountOctas / 100000000)) * 2} APT</div>
-                        <div className="game-creator">
-                          Host: {multiplayerService.formatAddress(game.player1)}
-                        </div>
-                        <div className="game-id">Game ID: {game.game_id}</div>
-                      </div>
-                      <button 
-                        className="join-btn"
-                        onClick={() => {
-                          handleJoinGame(game.game_id);
-                        }}
-                        disabled={isDisabled}
-                      >
-                        {isOwnGame ? 'Your Game' : 'Join Game'}
-                      </button>
-                    </div>
-                  );
-                })
+                <div className="loading-stats">
+                  <div className="loading-spinner"></div>
+                  <p>Loading stats...</p>
+                </div>
               )}
             </div>
-          </div>
-        )}
-
-        {activeTab === 'stats' && (
-          <div className="stats-section">
-            <h2>Your Statistics</h2>
-            
-            {playerStats ? (
-              <div className="stats-grid">
-                <div className="stat-card">
-                  <div className="stat-icon">🎮</div>
-                  <div className="stat-value">{playerStats.gamesPlayed}</div>
-                  <div className="stat-label">Games Played</div>
-                </div>
-                
-                <div className="stat-card">
-                  <div className="stat-icon">🏆</div>
-                  <div className="stat-value">{playerStats.gamesWon}</div>
-                  <div className="stat-label">Games Won</div>
-                </div>
-                
-                <div className="stat-card">
-                  <div className="stat-icon">📊</div>
-                  <div className="stat-value">{playerStats?.winRate || 0}%</div>
-                  <div className="stat-label">Win Rate</div>
-                </div>
-                
-                <div className="stat-card">
-                  <div className="stat-icon">💰</div>
-                  <div className="stat-value">{playerStats?.totalWagered?.toFixed(2) || '0.00'}</div>
-                  <div className="stat-label">Total Wagered (APT)</div>
-                </div>
-                
-                <div className="stat-card">
-                  <div className="stat-icon">💎</div>
-                  <div className="stat-value">{playerStats?.totalWinnings?.toFixed(2) || '0.00'}</div>
-                  <div className="stat-label">Total Winnings (APT)</div>
-                </div>
-                
-                <div className="stat-card">
-                  <div className="stat-icon">📈</div>
-                  <div className="stat-value">
-                    {(playerStats.totalWinnings - playerStats.totalWagered).toFixed(2)}
-                  </div>
-                  <div className="stat-label">Net Profit (APT)</div>
-                </div>
-              </div>
-            ) : (
-              <div className="loading-stats">Loading stats...</div>
-            )}
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

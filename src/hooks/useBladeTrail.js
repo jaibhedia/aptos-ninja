@@ -61,7 +61,7 @@ export const useBladeTrail = () => {
       
       // Calculate line width based on position in trail
       const progress = i / bladeTrail.length;
-      const baseWidth = 4; // Made thinner for more precise cutting feel
+      const baseWidth = 4.6; // Increased by 15% (4 * 1.15 = 4.6) for more visible blade
       const width = baseWidth * (1 - progress * 0.5) * currentPoint.alpha;
       
       // Draw the blade segment

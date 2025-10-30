@@ -4,6 +4,7 @@ import GameScreen from './components/GameScreen';
 import ResultsScreen from './components/ResultsScreen';
 import ParticleContainer from './components/ParticleContainer';
 import LandingPage from './components/LandingPage';
+import ModeSelection from './components/ModeSelection';
 import { useGameState } from './hooks/useGameState';
 import { useTaskbarControls } from './hooks/useTaskbarControls';
 import { useAptos } from './hooks/useAptos';
@@ -22,7 +23,8 @@ function App() {
     loseLife,
     loseLiveFromMissedToken,
     togglePause,
-    createScreenFlash
+    createScreenFlash,
+    decrementTimer
   } = useGameState();
 
   // Aptos wallet and blockchain integration
@@ -30,6 +32,7 @@ function App() {
   const [particles, setParticles] = useState([]);
   const [showLanding, setShowLanding] = useState(true);
   const [showMultiplayer, setShowMultiplayer] = useState(false);
+  const [showModeSelection, setShowModeSelection] = useState(false);
   const [multiplayerGameId, setMultiplayerGameId] = useState(null);
 
   // Add taskbar controls
@@ -96,6 +99,7 @@ function App() {
             onTogglePause={togglePause}
             onCreateParticles={handleCreateParticles}
             onCreateScreenFlash={createScreenFlash}
+            onDecrementTimer={decrementTimer}
             updateParticles={updateParticles}
             onBackToHome={handleBackToLanding}
             aptos={aptos}
@@ -120,17 +124,23 @@ function App() {
 
   const handleStartFromLanding = useCallback(() => {
     setShowLanding(false);
-    startGame();
+    setShowModeSelection(true);
+  }, []);
+
+  const handleModeSelect = (mode) => {
+    setShowModeSelection(false);
+    startGame(mode);
     // Start blockchain game session if wallet is connected
     if (aptos.isConnected) {
       aptos.startGameSession();
     }
-  }, [startGame, aptos]);
+  };
 
   const handleBackToLanding = () => {
     showStartScreen(); // Reset game state to start screen
     setShowLanding(true);
     setShowMultiplayer(false);
+    setShowModeSelection(false);
     setMultiplayerGameId(null);
   };
 
@@ -165,6 +175,28 @@ function App() {
           walletAddress={aptos.walletAddress}
           onStartGame={handleStartMultiplayerGame}
           onBack={handleBackToLanding}
+        />
+        <SpeedInsights />
+        <Analytics />
+      </div>
+    );
+  }
+
+  if (showModeSelection) {
+    return (
+      <div className="App">
+        <div className="beta-tag">
+          <span className="beta-text">BETA v0.1</span>
+        </div>
+        
+        <ModeSelection
+          onSelectMode={handleModeSelect}
+          onBack={handleBackToLanding}
+          bestScores={{
+            classic: gameState.bestScoreClassic,
+            arcade: gameState.bestScoreArcade,
+            zen: gameState.bestScoreZen
+          }}
         />
         <SpeedInsights />
         <Analytics />

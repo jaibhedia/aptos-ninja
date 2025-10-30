@@ -73,6 +73,7 @@ const LandingPage = ({ onStartGame, onMultiplayer, aptos }) => {
               </h1>
               <p className="hero-game-subtitle"></p>
             </div>
+            
             <button className="hero-play-button" onClick={handlePlayClick}>
               <span className="play-icon">▶</span>
               Play Now

@@ -16,6 +16,7 @@ const GameScreen = ({
   onTogglePause,
   onCreateParticles,
   onCreateScreenFlash,
+  onDecrementTimer,
   updateParticles,
   onBackToHome,
   aptos
@@ -44,6 +45,7 @@ const GameScreen = ({
     updateGame,
     render,
     cleanupExcessItems,
+    showComboMessage,
     itemCount
   } = useGameLoop(canvasRef, gameState, onEndGame, updateParticles, handleMissedFruit);
 
@@ -78,7 +80,8 @@ const GameScreen = ({
     addTrailPoint,
     isSlashing,
     addPopup,
-    handleSlashRecorded
+    handleSlashRecorded,
+    showComboMessage
   );
 
   useEffect(() => {
@@ -111,39 +114,59 @@ const GameScreen = ({
       updateTrail(); // Update blade trail
     }, 16);
     
-    // Progressive spawn system - gets much more aggressive over time
+    // Fruit Ninja style progressive spawning - starts very slow, gradually increases
     let lastSpawn = Date.now();
     const dynamicSpawner = setInterval(() => {
       const now = Date.now();
       if (!gameState.gameStartTime) return;
       
       const elapsed = now - gameState.gameStartTime;
-      let currentInterval = 1200; // Start interval
       
-      // Progressive difficulty every 10 seconds
-      if (elapsed > 10000) {
-        const difficultyLevel = Math.floor(elapsed / 10000);
-        // Much more aggressive spawn rate reduction
-        currentInterval = Math.max(200, 1200 - (difficultyLevel * 200)); // Down to 200ms minimum
-        
-        // Super hard mode after 1 minute - spawn multiple items
-        if (elapsed > 60000) {
-          const multiSpawn = Math.min(3, Math.floor(difficultyLevel / 3)); // Up to 3 items at once
-          if (now - lastSpawn >= currentInterval) {
-            for (let i = 0; i <= multiSpawn; i++) {
-              setTimeout(() => spawnItem(), i * 100); // Stagger spawns by 100ms
-            }
-            lastSpawn = now;
-          }
-        } else if (now - lastSpawn >= currentInterval) {
-          spawnItem();
-          lastSpawn = now;
+      // Progressive difficulty system (Fruit Ninja algorithm - very gentle start)
+      let waveSize, spawnInterval, staggerDelay;
+      
+      if (elapsed < 15000) {
+        // First 15 seconds - VERY slow tutorial, 1 token at a time
+        waveSize = 1;
+        spawnInterval = 3000; // 3 seconds between spawns (very slow)
+        staggerDelay = 0;
+      } else if (elapsed < 30000) {
+        // 15-30 seconds - Still gentle, start introducing pairs occasionally
+        waveSize = Math.random() < 0.8 ? 1 : 2; // 80% single, 20% pairs
+        spawnInterval = 2500; // 2.5 seconds
+        staggerDelay = 200;
+      } else if (elapsed < 50000) {
+        // 30-50 seconds - Mix of 1-2 tokens, more pairs
+        waveSize = Math.random() < 0.5 ? 1 : 2; // 50% single, 50% pairs
+        spawnInterval = 2200;
+        staggerDelay = 180;
+      } else if (elapsed < 70000) {
+        // 50-70 seconds - 1-3 tokens, introducing triplets
+        const rand = Math.random();
+        waveSize = rand < 0.3 ? 1 : rand < 0.7 ? 2 : 3; // 30% single, 40% pairs, 30% triplets
+        spawnInterval = 2000;
+        staggerDelay = 150;
+      } else if (elapsed < 90000) {
+        // 70-90 seconds - 2-4 tokens
+        waveSize = 2 + Math.floor(Math.random() * 3); // 2-4 tokens
+        spawnInterval = 1800;
+        staggerDelay = 130;
+      } else {
+        // After 90 seconds - 3-5 tokens, expert mode
+        waveSize = 3 + Math.floor(Math.random() * 3); // 3-5 tokens
+        spawnInterval = 1500;
+        staggerDelay = 100;
+      }
+      
+      if (now - lastSpawn >= spawnInterval) {
+        // Spawn wave with staggered timing
+        for (let i = 0; i < waveSize; i++) {
+          setTimeout(() => spawnItem(), i * staggerDelay);
         }
-      } else if (now - lastSpawn >= currentInterval) {
-        spawnItem();
+        
         lastSpawn = now;
       }
-    }, 50); // Check every 50ms for more precise timing
+    }, 50); // Check every 50ms for precise timing
 
     return () => {
       clearInterval(gameLoop);
@@ -176,6 +199,19 @@ const GameScreen = ({
       clearAllMissedNotifications();
     }
   }, [gameState.isGameRunning, clearAllPopups, clearAllMissedNotifications]);
+
+  // Timer countdown for Arcade and Zen modes
+  useEffect(() => {
+    if (!gameState.isGameRunning || gameState.isPaused || gameState.timeRemaining === null) {
+      return;
+    }
+    
+    const timerInterval = setInterval(() => {
+      onDecrementTimer();
+    }, 1000); // Decrease every second
+    
+    return () => clearInterval(timerInterval);
+  }, [gameState.isGameRunning, gameState.isPaused, gameState.timeRemaining, onDecrementTimer]);
 
   useEffect(() => {
     const ctx = ctxRef.current;
@@ -372,6 +408,28 @@ const GameScreen = ({
             }
             return null;
           })()}
+          
+          {/* Timer Display for Arcade and Zen modes */}
+          {gameState.timeRemaining !== null && (
+            <div style={{
+              display: 'flex',
+              alignItems: 'baseline',
+              gap: '6px',
+              fontSize: '1.3rem',
+              fontWeight: '700',
+              color: gameState.timeRemaining <= 10 ? '#FF4444' : '#FFD700',
+              animation: gameState.timeRemaining <= 10 ? 'pulse 0.5s infinite' : 'none'
+            }}>
+              <span style={{
+                fontSize: '0.75rem',
+                color: 'rgba(255, 255, 255, 0.6)',
+                fontWeight: '500',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em'
+              }}>TIME</span>
+              <span>{gameState.timeRemaining}s</span>
+            </div>
+          )}
           
           {/* Best Score */}
           <div style={{

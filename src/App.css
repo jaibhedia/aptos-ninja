@@ -96,6 +96,17 @@
   }
 }
 
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
 @keyframes timerFlash {
   0% {
     box-shadow: 0 0 4px rgba(255, 68, 68, 0.4);
@@ -356,4 +367,70 @@ button {
   min-height: 44px;
   min-width: 44px;
   -webkit-tap-highlight-color: transparent;
+}
+
+/* Tier Section in Results */
+.tier-section {
+  margin: 30px 0;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.nft-reward-info {
+  text-align: center;
+  margin-bottom: 15px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+}
+
+.nft-reward-info h4 {
+  font-size: 24px;
+  font-weight: 900;
+  font-family: 'Impact', 'Arial Black', sans-serif;
+  margin-bottom: 8px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.nft-reward-info p {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+}
+
+.nft-locked-message {
+  text-align: center;
+  padding: 25px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  margin: 20px 0;
+}
+
+.lock-icon {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+.nft-locked-message p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+.games-needed {
+  color: #FFD700 !important;
+  font-weight: 700;
+  font-size: 15px !important;
+  margin-top: 10px !important;
+}
+/* Subtle Token Shatter Effects */
+.scratch-mark {
+  will-change: opacity;
+  mix-blend-mode: screen;
+}
+
+.token-shard {
+  will-change: transform, opacity;
+  mix-blend-mode: normal;
 }

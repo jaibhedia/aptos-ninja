@@ -1,9 +1,12 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useVisibility } from './useVisibility';
 
-// Starknet token only - for Starknet
+// Starknet tokens with different colored rings - each has different speed and difficulty
 const TOKEN_TYPES = [
-  { name: "Starknet", image: "/logo.svg", color: "#EC796B", points: 10 },
+  { name: "Yellow Ring", image: "/logo.svg", color: "#FFD700", ringColor: "#FFD700", points: 10, speedMod: 1.0, difficulty: "Easy" },
+  { name: "Green Ring", image: "/logo.svg", color: "#00FF88", ringColor: "#00FF88", points: 15, speedMod: 1.3, difficulty: "Medium" },
+  { name: "Blue Ring", image: "/logo.svg", color: "#4169E1", ringColor: "#4169E1", points: 20, speedMod: 1.6, difficulty: "Hard" },
+  { name: "Red Ring", image: "/logo.svg", color: "#FF4444", ringColor: "#FF4444", points: 25, speedMod: 2.0, difficulty: "Expert" },
 ];
 
 const ITEM_TYPES = [
@@ -13,7 +16,12 @@ const ITEM_TYPES = [
 
 const MAX_ITEMS = 12; // Limit maximum items on screen
 
-const getRandomItemType = () => {
+const getRandomItemType = (mode = null) => {
+  // In Zen mode, never spawn bombs
+  if (mode === 'zen') {
+    return ITEM_TYPES[0]; // Always return Token
+  }
+  
   const random = Math.random();
   let cumulative = 0;
   
@@ -27,10 +35,16 @@ const getRandomItemType = () => {
   return ITEM_TYPES[0];
 };
 
+// Get random token type from TOKEN_TYPES
+const getRandomToken = () => {
+  return TOKEN_TYPES[Math.floor(Math.random() * TOKEN_TYPES.length)];
+};
+
 export const useGameLoop = (canvasRef, gameState, onEndGame, updateParticles, onFruitMissed, difficultyLevel = 1) => {
   const [items, setItems] = useState([]);
   const [slashTrail, setSlashTrail] = useState([]);
   const [particles, setParticles] = useState([]);
+  const [comboMessage, setComboMessage] = useState(null); // For on-screen combo display
   const [tokenImages, setTokenImages] = useState({});
   const isVisible = useVisibility();
   const penalizedFruits = useRef(new Set()); // Track fruits that already had penalties applied
@@ -102,30 +116,52 @@ export const useGameLoop = (canvasRef, gameState, onEndGame, updateParticles, on
     if (items.length >= MAX_ITEMS) return;
     
     const canvas = canvasRef.current;
-    const itemType = getRandomItemType();
+    const itemType = getRandomItemType(gameState.mode);
     
     // Randomly select a token for good items
-    const randomToken = TOKEN_TYPES[Math.floor(Math.random() * TOKEN_TYPES.length)];
+    let randomToken = getRandomToken();
     
-    // Calculate progressive difficulty based on elapsed time
+    // Calculate progressive difficulty based on elapsed time (Fruit Ninja style)
     let speedMultiplier = 1;
     
     if (gameState.gameStartTime) {
       const elapsed = Date.now() - gameState.gameStartTime;
       
-      // Slow start for first 5 seconds
-      if (elapsed < 5000) {
-        speedMultiplier = 0.5 + (elapsed / 5000) * 0.5; // Gradually increase from 0.5x to 1x over 5 seconds
+      // Very gentle start for first 15 seconds
+      if (elapsed < 15000) {
+        speedMultiplier = 0.4 + (elapsed / 15000) * 0.6; // Gradually increase from 0.4x to 1x over 15 seconds
+        
+        // Only use yellow (easy) tokens in first 15 seconds
+        if (itemType.isGood) {
+          randomToken = TOKEN_TYPES[0]; // Force yellow ring (easiest)
+        }
       }
-      // Progressive difficulty after 10 seconds
-      else if (elapsed > 10000) {
-        const difficultyLevel = Math.floor(elapsed / 10000); // Level 1 at 10s, 2 at 20s, etc.
-        speedMultiplier = 1 + (difficultyLevel * 0.4); // 40% faster each level
+      // Gradual progression 15-45 seconds
+      else if (elapsed < 45000) {
+        speedMultiplier = 1.0 + ((elapsed - 15000) / 30000) * 0.5; // 1.0x to 1.5x
+        
+        // Only yellow and green tokens (easy/medium) in first 45 seconds
+        if (itemType.isGood && randomToken === TOKEN_TYPES[2]) { // If blue was selected
+          randomToken = Math.random() < 0.5 ? TOKEN_TYPES[0] : TOKEN_TYPES[1]; // Replace with yellow or green
+        }
+        if (itemType.isGood && randomToken === TOKEN_TYPES[3]) { // If red was selected
+          randomToken = Math.random() < 0.5 ? TOKEN_TYPES[0] : TOKEN_TYPES[1]; // Replace with yellow or green
+        }
+      }
+      // Progressive difficulty after 45 seconds
+      else if (elapsed > 45000) {
+        const difficultyLevel = Math.floor((elapsed - 45000) / 20000); // Level up every 20 seconds after 45s
+        speedMultiplier = 1.5 + (difficultyLevel * 0.3); // 1.5x, 1.8x, 2.1x, etc.
       }
     }
     
-    // Decide spawn direction: 70% from top, 30% from bottom
-    const spawnFromBottom = Math.random() < 0.3;
+    // Apply token-specific speed modifier for good items
+    if (itemType.isGood && randomToken.speedMod) {
+      speedMultiplier *= randomToken.speedMod;
+    }
+    
+    // Always spawn from top
+    const spawnFromBottom = false;
     
     // Define safe spawn area (with margins to prevent tokens going off-screen)
     const MARGIN = 80; // Margin from edges
@@ -193,6 +229,11 @@ export const useGameLoop = (canvasRef, gameState, onEndGame, updateParticles, on
       }
     }
     
+    // Update item type points based on token for good items
+    const finalItemType = itemType.isGood 
+      ? { ...itemType, points: randomToken.points } 
+      : itemType;
+    
     const item = {
       id: Math.random(),
       x: spawnX,
@@ -203,7 +244,7 @@ export const useGameLoop = (canvasRef, gameState, onEndGame, updateParticles, on
       radius: itemType.name === 'Bomb' ? 28 : 38,
       rotation: 0,
       rotationSpeed: (Math.random() - 0.5) * 0.15 * speedMultiplier,
-      type: itemType,
+      type: finalItemType,
       token: itemType.isGood ? randomToken : null,
       slashed: false,
       penaltyApplied: false,
@@ -217,7 +258,7 @@ export const useGameLoop = (canvasRef, gameState, onEndGame, updateParticles, on
     };
     
     setItems(prev => [...prev, item]);
-  }, [gameState.isGameRunning, gameState.isPaused, gameState.gameStartTime, canvasRef, isVisible, items.length]);
+  }, [gameState.isGameRunning, gameState.isPaused, gameState.gameStartTime, gameState.mode, canvasRef, isVisible, items.length]);
 
   const updateGame = useCallback(() => {
     if (!gameState.isGameRunning || gameState.isPaused || !canvasRef.current) return;
@@ -434,18 +475,18 @@ export const useGameLoop = (canvasRef, gameState, onEndGame, updateParticles, on
         );
         gradient.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
         gradient.addColorStop(0.5, 'rgba(255, 255, 255, 0.7)');
-        gradient.addColorStop(1, item.token?.color || '#FF8C00');
+        gradient.addColorStop(1, item.token?.ringColor || item.token?.color || '#FF8C00');
         
         ctx.fillStyle = gradient;
         ctx.beginPath();
         ctx.arc(0, 0, item.radius, 0, Math.PI * 2);
         ctx.fill();
         
-        // Add subtle outer glow
-        ctx.shadowColor = item.token?.color || '#FF8C00';
+        // Add subtle outer glow with ring color
+        ctx.shadowColor = item.token?.ringColor || item.token?.color || '#FF8C00';
         ctx.shadowBlur = 20;
-        ctx.strokeStyle = item.token?.color || '#FF8C00';
-        ctx.lineWidth = 3;
+        ctx.strokeStyle = item.token?.ringColor || item.token?.color || '#FF8C00';
+        ctx.lineWidth = 4;
         ctx.stroke();
         
         // Reset shadow for image drawing
@@ -524,7 +565,76 @@ export const useGameLoop = (canvasRef, gameState, onEndGame, updateParticles, on
       
       ctx.restore();
     });
-  }, [canvasRef, tokenImages]);
+    
+    // Draw combo message on screen (Fruit Ninja style)
+    if (comboMessage && comboMessage.visible) {
+      ctx.save();
+      
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2 - 100;
+      
+      // Calculate scale based on time
+      const progress = (Date.now() - comboMessage.startTime) / comboMessage.duration;
+      let scale = 1;
+      let opacity = 1;
+      
+      if (progress < 0.2) {
+        // Scale in
+        scale = 0.5 + (progress / 0.2) * 0.7; // 0.5 to 1.2
+      } else if (progress > 0.8) {
+        // Fade out
+        opacity = 1 - ((progress - 0.8) / 0.2);
+        scale = 1.2 - ((progress - 0.8) / 0.2) * 0.2;
+      } else {
+        scale = 1.2;
+      }
+      
+      ctx.globalAlpha = opacity;
+      ctx.translate(centerX, centerY);
+      ctx.scale(scale, scale);
+      ctx.rotate(-5 * Math.PI / 180); // -5 degrees rotation
+      
+      // Draw combo text with bold outline
+      ctx.font = 'bold 96px Impact, Arial Black, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      
+      // Black outline (thick)
+      ctx.strokeStyle = '#000';
+      ctx.lineWidth = 12;
+      ctx.lineJoin = 'round';
+      ctx.strokeText(`X${comboMessage.combo}`, 0, 0);
+      
+      // Yellow fill with gradient
+      const gradient = ctx.createLinearGradient(0, -50, 0, 50);
+      gradient.addColorStop(0, '#FFE55C');
+      gradient.addColorStop(1, '#FFD700');
+      ctx.fillStyle = gradient;
+      ctx.fillText(`X${comboMessage.combo}`, 0, 0);
+      
+      // Glow effect
+      ctx.shadowColor = '#FFD700';
+      ctx.shadowBlur = 30;
+      ctx.fillText(`X${comboMessage.combo}`, 0, 0);
+      
+      // Draw bonus points below
+      ctx.shadowBlur = 0;
+      ctx.font = 'bold 48px Impact, Arial Black, sans-serif';
+      
+      // Black outline for bonus
+      ctx.strokeStyle = '#000';
+      ctx.lineWidth = 8;
+      ctx.strokeText(`+${comboMessage.points}`, 0, 70);
+      
+      // White fill for bonus
+      ctx.fillStyle = '#FFF';
+      ctx.shadowColor = '#FFD700';
+      ctx.shadowBlur = 20;
+      ctx.fillText(`+${comboMessage.points}`, 0, 70);
+      
+      ctx.restore();
+    }
+  }, [canvasRef, tokenImages, comboMessage]);
 
   const clearAllItems = useCallback(() => {
     setItems([]);
@@ -544,6 +654,21 @@ export const useGameLoop = (canvasRef, gameState, onEndGame, updateParticles, on
     });
   }, []);
 
+  const showComboMessage = useCallback((combo, points) => {
+    setComboMessage({
+      combo,
+      points,
+      visible: true,
+      startTime: Date.now(),
+      duration: 1000 // Show for 1 second
+    });
+    
+    // Auto-hide after duration
+    setTimeout(() => {
+      setComboMessage(prev => prev ? { ...prev, visible: false } : null);
+    }, 1000);
+  }, []);
+
   return {
     items,
     slashTrail,
@@ -556,6 +681,7 @@ export const useGameLoop = (canvasRef, gameState, onEndGame, updateParticles, on
     render,
     clearAllItems,
     cleanupExcessItems,
+    showComboMessage,
     itemCount: items.length
   };
 };
